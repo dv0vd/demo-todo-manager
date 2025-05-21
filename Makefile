@@ -7,12 +7,19 @@
 #   docker.io/node:20.18.1-bookworm \
 #   sh -c 'cd /app && npm ci --verbose'
 
+tidy:
+	podman run \
+  --rm \
+  -v ./:/app \
+  docker.io/golang:1.24.2-bookworm \
+  sh -c 'cd /app && go mod tidy && go mod vendor'
+
 build:
 	podman run \
   --rm \
   -v ./:/app \
   docker.io/golang:1.24.2-bookworm \
-  sh -c 'cd /app && go mod tidy && go mod vendor && go build -v -o ./bin/app ./cmd'
+  sh -c 'cd /app && go build -mod=vendor -v -o ./bin/app ./cmd'
 
 test:
 	podman run \
@@ -33,6 +40,11 @@ start:
 
 start-app:
 	podman-compose up -d app
+
+stop-app:
+	podman-compose down app
+
+restart-app: stop-app start-app
 
 logs-app:
 	podman logs -f todo-manager_app

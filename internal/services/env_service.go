@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-type EnvService struct{}
+type envService struct{}
 
 func NewEnvService() contracts.EnvService {
-	return &EnvService{}
+	return &envService{}
 }
 
-func (e *EnvService) Validate() bool {
+func (s *envService) Validate() bool {
 	value := os.Getenv("TODO_MANAGER_DB_HOST")
 	if value == "" {
 		logger.Log.Error("TODO_MANAGER_DB_HOST is not set!")

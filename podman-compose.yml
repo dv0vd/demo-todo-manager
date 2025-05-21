@@ -5,9 +5,10 @@ services:
     volumes:
       - ./:/app
       # - ./go_packages:/go/pkg/mod
+    working_dir: /app
     env_file:
       - ./.env
-    command: sh -c 'cd /app && go build -v -o ./bin/app ./cmd && ./bin/app'
+    command: sh -c '/app/bin/app'
     # command: sh -c 'cd /app && go mod tidy && go mod vendor && go build -v -o ./bin/app ./cmd && ./bin/app'
     networks:
       podman_network:
