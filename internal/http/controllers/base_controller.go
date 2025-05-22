@@ -113,10 +113,7 @@ func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, url s
 			w,
 			r,
 			url,
-			responses.ValidationErrorResponse{
-				Message: "Validation errors",
-				Data:    dataErrors,
-			},
+			responses.NewValidationErrorResponse(dataErrors),
 			http.StatusUnprocessableEntity,
 		)
 
