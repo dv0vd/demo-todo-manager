@@ -1,7 +1,7 @@
 package dto
 
 type UserDTO struct {
-	ID       uint
+	ID       uint64
 	Email    string
 	Password string
 }

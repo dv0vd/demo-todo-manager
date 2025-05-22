@@ -16,4 +16,5 @@ type EnvService interface {
 type UserService interface {
 	CloseDBConnection()
 	GetByEmail(string) (dto.UserDTO, bool)
+	Store(dto.UserDTO) (dto.UserDTO, error)
 }

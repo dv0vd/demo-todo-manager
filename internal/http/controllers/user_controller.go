@@ -31,7 +31,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		Password: req.Password,
 	}
 
-	existedUserDTO, ok := c.userService.GetByEmail(req.Email)
+	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
 		controllerGenerateJsonResponse(
 			w,
@@ -40,6 +40,8 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 			responses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
+
+		return
 	}
 
 	if (existedUserDTO != dto.UserDTO{}) {
@@ -54,4 +56,24 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	insertedUserDTO, err := c.userService.Store(userDTO)
+	if err != nil {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			url,
+			responses.NewErrorResponse("Unknown error"),
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	controllerGenerateJsonResponse(
+		w,
+		r,
+		url,
+		responses.NewUserSignupResponse(insertedUserDTO),
+		http.StatusCreated,
+	)
 }

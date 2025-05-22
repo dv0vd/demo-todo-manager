@@ -7,6 +7,8 @@ import (
 	"demo-todo-manager/pkg/logger"
 	"fmt"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 type userRepository struct {
@@ -41,7 +43,7 @@ func (r *userRepository) GetByEmail(email string) (dto.UserDTO, bool) {
 	var userDTO dto.UserDTO
 
 	if err := r.client.QueryRow(fmt.Sprintf("SELECT * FROM %v WHERE email=$1", r.table), email).Scan(&userDTO.ID, &userDTO.Email, &userDTO.Password); err != nil {
-		logger.Log.Warningf("Failed getting user by email %v. Error: %v", email, err.Error())
+		logger.Log.Warningf("Failed getting user by email '%v'. Error: %v", email, err.Error())
 
 		if err == sql.ErrNoRows {
 			return userDTO, true
@@ -51,4 +53,14 @@ func (r *userRepository) GetByEmail(email string) (dto.UserDTO, bool) {
 	}
 
 	return userDTO, true
+}
+
+func (r *userRepository) Store(userDTO dto.UserDTO) (dto.UserDTO, error) {
+	if err := r.client.QueryRow(fmt.Sprintf("INSERT INTO %v (email, password) VALUES ($1, $2) RETURNING id", r.table), userDTO.Email, userDTO.Password).Scan(&userDTO.ID); err != nil {
+		logger.Log.WithFields(logrus.Fields{"userDTO": userDTO}).Warningf("Failed inserting user '%v'. Error: %v", userDTO.Email, err.Error())
+
+		return userDTO, err
+	}
+
+	return userDTO, nil
 }
