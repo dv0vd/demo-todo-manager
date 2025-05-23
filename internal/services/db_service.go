@@ -14,6 +14,7 @@ import (
 type dbService struct{}
 
 func NewDBService() contracts.DBService {
+	// todo - pass env
 	return &dbService{}
 }
 
@@ -39,5 +40,4 @@ func (s *dbService) Migrate() {
 		}
 	}
 	logger.Log.Info("DB migrations completed successfully")
-
 }

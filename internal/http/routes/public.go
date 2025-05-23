@@ -11,6 +11,7 @@ func RegisterPublicRoutes(mux *http.ServeMux, userController contracts.UserContr
 	logger.Log.Info("Starting registering public routes")
 
 	mux.HandleFunc("/api/signup", userController.Signup)
+	mux.HandleFunc("/api/login", userController.Login)
 
 	contentTypeMux :=
 		middleware.ContentTypeMiddleware(mux)

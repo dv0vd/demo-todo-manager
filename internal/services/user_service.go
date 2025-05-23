@@ -14,10 +14,14 @@ type userService struct {
 	repository contracts.UserRepository
 }
 
-func NewUserService() contracts.UserService {
-	return &userService{
-		repository: repositories.NewUserRepositoryPostgres(),
+func NewUserService(repository bool) contracts.UserService {
+	if repository {
+		return &userService{
+			repository: repositories.NewUserRepositoryPostgres(),
+		}
 	}
+
+	return &userService{}
 }
 
 func (s *userService) CloseDBConnection() {
@@ -29,7 +33,7 @@ func (s *userService) GetByEmail(email string) (dto.UserDTO, bool) {
 }
 
 func (s *userService) Store(userDTO dto.UserDTO) (dto.UserDTO, error) {
-	hashedPassword, err := s.hashPassword(userDTO)
+	hashedPassword, err := s.HashPassword(userDTO)
 	if err != nil {
 		return userDTO, err
 	}
@@ -39,7 +43,15 @@ func (s *userService) Store(userDTO dto.UserDTO) (dto.UserDTO, error) {
 	return s.repository.Store(userDTO)
 }
 
-func (s *userService) hashPassword(userDTO dto.UserDTO) (string, error) {
+func (s *userService) ValidatePassword(password, hashedPassword string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)); err != nil {
+		return false
+	}
+
+	return true
+}
+
+func (s *userService) HashPassword(userDTO dto.UserDTO) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
 
 	if err != nil {

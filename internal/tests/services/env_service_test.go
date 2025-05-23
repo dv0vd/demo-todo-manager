@@ -2,8 +2,11 @@ package tests
 
 import (
 	"demo-todo-manager/internal/services"
+	"fmt"
 	"os"
 	"testing"
+
+	"github.com/go-faker/faker/v4"
 )
 
 func TestEnvServiceValidate(t *testing.T) {
@@ -13,12 +16,15 @@ func TestEnvServiceValidate(t *testing.T) {
 		expected bool
 	}{
 		{
-			name: "All env variables are set",
+			name: "All env variables are correctly set",
 			envVars: map[string]string{
 				"TODO_MANAGER_DB_HOST": "localhost",
 				"TODO_MANAGER_DB_PORT": "5432",
 				"TODO_MANAGER_DB_NAME": "name",
 				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
 			},
 			expected: true,
 		},
@@ -28,6 +34,9 @@ func TestEnvServiceValidate(t *testing.T) {
 				"TODO_MANAGER_DB_PORT": "5432",
 				"TODO_MANAGER_DB_NAME": "name",
 				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
 			},
 			expected: false,
 		},
@@ -37,6 +46,9 @@ func TestEnvServiceValidate(t *testing.T) {
 				"TODO_MANAGER_DB_HOST": "localhost",
 				"TODO_MANAGER_DB_NAME": "name",
 				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
 			},
 			expected: false,
 		},
@@ -46,6 +58,9 @@ func TestEnvServiceValidate(t *testing.T) {
 				"TODO_MANAGER_DB_HOST": "localhost",
 				"TODO_MANAGER_DB_PORT": "5432",
 				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
 			},
 			expected: false,
 		},
@@ -55,6 +70,97 @@ func TestEnvServiceValidate(t *testing.T) {
 				"TODO_MANAGER_DB_HOST": "localhost",
 				"TODO_MANAGER_DB_PORT": "5432",
 				"TODO_MANAGER_DB_NAME": "name",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_TTL env variable is not set",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_REFRESH_TTL env variable is not set",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_SECRET env variable is not set",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_TTL env variable is negative",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(-1000, -1),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_REFRESH_TTL env variable is negative",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      getRandomInt(-1000, -1),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_TTL env variable is string",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              faker.Word(),
+				"JWT_REFRESH_TTL":      getRandomInt(1, 1000),
+				"JWT_SECRET":           faker.Word(),
+			},
+			expected: false,
+		},
+		{
+			name: "JWT_REFRESH_TTL env variable is string",
+			envVars: map[string]string{
+				"TODO_MANAGER_DB_HOST": "localhost",
+				"TODO_MANAGER_DB_PORT": "5432",
+				"TODO_MANAGER_DB_NAME": "name",
+				"TODO_MANAGER_DB_USER": "user",
+				"JWT_TTL":              getRandomInt(1, 1000),
+				"JWT_REFRESH_TTL":      faker.Word(),
+				"JWT_SECRET":           faker.Word(),
 			},
 			expected: false,
 		},
@@ -76,4 +182,10 @@ func TestEnvServiceValidate(t *testing.T) {
 			os.Unsetenv(key)
 		}
 	}
+}
+
+func getRandomInt(min, max int) string {
+	rand, _ := faker.RandomInt(min, max, 1)
+
+	return fmt.Sprint(rand[0])
 }

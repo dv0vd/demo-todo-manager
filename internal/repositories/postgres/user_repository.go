@@ -43,11 +43,11 @@ func (r *userRepository) GetByEmail(email string) (dto.UserDTO, bool) {
 	var userDTO dto.UserDTO
 
 	if err := r.client.QueryRow(fmt.Sprintf("SELECT * FROM %v WHERE email=$1", r.table), email).Scan(&userDTO.ID, &userDTO.Email, &userDTO.Password); err != nil {
-		logger.Log.Warningf("Failed getting user by email '%v'. Error: %v", email, err.Error())
-
 		if err == sql.ErrNoRows {
 			return userDTO, true
 		}
+
+		logger.Log.Warningf("Failed getting user by email '%v'. Error: %v", email, err.Error())
 
 		return userDTO, false
 	}
