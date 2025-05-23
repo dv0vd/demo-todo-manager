@@ -4,18 +4,34 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/pkg/logger"
 	"fmt"
-	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-type dbService struct{}
+type dbService struct {
+	user     string
+	password string
+	host     string
+	port     string
+	database string
+}
 
-func NewDBService() contracts.DBService {
-	// todo - pass env
-	return &dbService{}
+func NewDBService(
+	user,
+	password,
+	host,
+	port,
+	database string,
+) contracts.DBService {
+	return &dbService{
+		user:     user,
+		password: password,
+		host:     host,
+		port:     port,
+		database: database,
+	}
 }
 
 func (s *dbService) CloseConnections(userService contracts.UserService) {
@@ -25,7 +41,7 @@ func (s *dbService) CloseConnections(userService contracts.UserService) {
 func (s *dbService) Migrate() {
 	m, err := migrate.New(
 		"file:///app/migrations/postgres",
-		fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable", os.Getenv("TODO_MANAGER_DB_USER"), os.Getenv("TODO_MANAGER_DB_PASSWORD"), os.Getenv("TODO_MANAGER_DB_HOST"), os.Getenv("TODO_MANAGER_DB_PORT"), os.Getenv("TODO_MANAGER_DB_NAME")),
+		fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable", s.user, s.password, s.host, s.port, s.database),
 	)
 	if err != nil {
 		logger.Log.Fatalf("Failed to read DB migrations. Error: %v", err.Error())
