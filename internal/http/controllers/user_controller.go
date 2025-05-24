@@ -20,6 +20,10 @@ func NewUserController(userService contracts.UserService, authService contracts.
 	}
 }
 
+func (c *userController) GetAuthService() contracts.AuthService {
+	return c.authService
+}
+
 func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserLoginRequest
 	url := "/api/login"

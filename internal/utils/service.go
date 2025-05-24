@@ -8,9 +8,6 @@ import (
 )
 
 func ServiceInitServices() (contracts.EnvService, contracts.UserService, contracts.DBService, contracts.AuthService) {
-	jwtTtl, _ := strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 0)
-	jwtRefreshTtl, _ := strconv.ParseUint(os.Getenv("JWT_REFRESH_TTL"), 10, 0)
-
 	return services.NewEnvService(),
 		services.NewUserService(true),
 		services.NewDBService(
@@ -20,5 +17,12 @@ func ServiceInitServices() (contracts.EnvService, contracts.UserService, contrac
 			os.Getenv("TODO_MANAGER_DB_PORT"),
 			os.Getenv("TODO_MANAGER_DB_NAME"),
 		),
-		services.NewAuthService(os.Getenv("JWT_SECRET"), jwtTtl, jwtRefreshTtl)
+		ServicesInitAuthService()
+}
+
+func ServicesInitAuthService() contracts.AuthService {
+	jwtTtl, _ := strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 0)
+	jwtRefreshTtl, _ := strconv.ParseUint(os.Getenv("JWT_REFRESH_TTL"), 10, 0)
+
+	return services.NewAuthService(os.Getenv("JWT_SECRET"), jwtTtl, jwtRefreshTtl)
 }

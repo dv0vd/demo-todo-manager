@@ -27,10 +27,18 @@ func NewAuthService(
 	}
 }
 
+func (s *authService) GetRefreshTTL() uint64 {
+	return s.ttlRefresh
+}
+
+func (s *authService) GetSecret() string {
+	return s.secret
+}
+
 func (s *authService) IssueToken(userId uint64) (string, error) {
 	claims := jwt.RegisteredClaims{
 		Subject:   fmt.Sprint(userId),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(s.ttl))),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(s.ttl) * time.Second)),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

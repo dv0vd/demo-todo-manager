@@ -5,6 +5,8 @@ import (
 )
 
 type AuthService interface {
+	GetRefreshTTL() uint64
+	GetSecret() string
 	IssueToken(uint64) (string, error)
 }
 
