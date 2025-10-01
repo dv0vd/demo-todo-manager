@@ -12,7 +12,7 @@ import (
 func AuthMiddleware(next http.Handler, authService contracts.AuthService) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
-		if !utils.MiddlewareAuthCheck(authHeader, authService.GetSecret(), authService.GetRefreshTTL()) {
+		if !utils.MiddlewareAuthCheck(authHeader, authService) {
 			errorResponse(w, "Invalid token")
 
 			return

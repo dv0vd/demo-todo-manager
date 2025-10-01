@@ -21,11 +21,12 @@ func main() {
 
 	dbService.Migrate()
 
-	userController := utils.ControllerInitControllers(userService, authService)
+	userController, authController := utils.ControllerInitControllers(userService, authService)
 
 	mux := http.NewServeMux()
-	routes := routes.RegisterPublicRoutes(mux, userController)
-	http.ListenAndServe(":8080", routes)
+	routes.RegisterPublicRoutes(mux, userController)
+	routes.RegisterPrivateRoutes(mux, authController)
+	http.ListenAndServe(":8080", mux)
 
 	// todo - graceful shutdown
 	// dbService.CloseConnections(userService)

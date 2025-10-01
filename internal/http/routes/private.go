@@ -7,17 +7,18 @@ import (
 	"net/http"
 )
 
-func RegisterPrivateRoutes(mux *http.ServeMux, userController contracts.UserController) http.Handler {
+func RegisterPrivateRoutes(mux *http.ServeMux, authController contracts.AuthController) {
 	logger.Log.Info("Starting registering private routes")
 
-	// mux.HandleFunc("/api/signup", userController.Signup)
-	// mux.HandleFunc("/api/login", userController.Login)
-
-	contentTypeMux :=
-		middleware.ContentTypeMiddleware(mux)
-	authMux := middleware.AuthMiddleware(contentTypeMux, userController.GetAuthService())
+	mux.Handle(
+		"/api/auth/refresh",
+		middleware.ContentTypeMiddleware(
+			middleware.AuthMiddleware(
+				http.HandlerFunc(authController.RefreshToken),
+				authController.GetAuthService(),
+			),
+		),
+	)
 
 	logger.Log.Info("Private routes have been registered successfully")
-
-	return authMux
 }

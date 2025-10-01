@@ -7,16 +7,11 @@ import (
 	"net/http"
 )
 
-func RegisterPublicRoutes(mux *http.ServeMux, userController contracts.UserController) http.Handler {
+func RegisterPublicRoutes(mux *http.ServeMux, userController contracts.UserController) {
 	logger.Log.Info("Starting registering public routes")
 
-	mux.HandleFunc("/api/signup", userController.Signup)
-	mux.HandleFunc("/api/login", userController.Login)
-
-	contentTypeMux :=
-		middleware.ContentTypeMiddleware(mux)
+	mux.Handle("/api/signup", middleware.ContentTypeMiddleware(http.HandlerFunc(userController.Signup)))
+	mux.Handle("/api/login", middleware.ContentTypeMiddleware(http.HandlerFunc(userController.Login)))
 
 	logger.Log.Info("Public routes have been registered successfully")
-
-	return contentTypeMux
 }

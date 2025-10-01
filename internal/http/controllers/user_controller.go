@@ -20,15 +20,10 @@ func NewUserController(userService contracts.UserService, authService contracts.
 	}
 }
 
-func (c *userController) GetAuthService() contracts.AuthService {
-	return c.authService
-}
-
 func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserLoginRequest
-	url := "/api/login"
 
-	if !ControllerPreparation(w, r, url, &req, requests.UserLoginValidateMethod) {
+	if !ControllerPreparation(w, r, &req, requests.UserLoginValidateMethod) {
 		return
 	}
 
@@ -42,7 +37,6 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
@@ -54,7 +48,6 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Incorrect login or password"),
 			http.StatusOK,
 		)
@@ -66,7 +59,6 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Incorrect login or password"),
 			http.StatusOK,
 		)
@@ -79,7 +71,6 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
@@ -90,17 +81,15 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		url,
 		responses.NewUserLoginResponse(token),
-		http.StatusInternalServerError,
+		http.StatusOK,
 	)
 }
 
 func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserSignupRequest
-	url := "/api/signup"
 
-	if !ControllerPreparation(w, r, url, &req, requests.UserSignupValidateMethod) {
+	if !ControllerPreparation(w, r, &req, requests.UserSignupValidateMethod) {
 		return
 	}
 
@@ -114,7 +103,6 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
@@ -126,7 +114,6 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("User already exists"),
 			http.StatusConflict,
 		)
@@ -139,7 +126,6 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
@@ -150,7 +136,6 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		url,
 		responses.NewUserSignupResponse(insertedUserDTO),
 		http.StatusCreated,
 	)

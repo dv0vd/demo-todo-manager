@@ -2,11 +2,13 @@ package contracts
 
 import (
 	"demo-todo-manager/internal/dto"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthService interface {
-	GetRefreshTTL() uint64
-	GetSecret() string
+	ExtractEncodedTokenFromHeader(string) string
+	GetToken(string) (*jwt.Token, error)
 	IssueToken(uint64) (string, error)
 }
 

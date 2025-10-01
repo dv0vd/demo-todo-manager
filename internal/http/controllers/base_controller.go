@@ -14,32 +14,32 @@ import (
 
 type methodValidationFn func(string) bool
 
-func ControllerPreparation(w http.ResponseWriter, r *http.Request, url string, req interface{}, validateFn methodValidationFn) bool {
-	body := contollerBodyParser(w, r, url)
+func ControllerPreparation(w http.ResponseWriter, r *http.Request, req interface{}, validateFn methodValidationFn) bool {
+	body := contollerBodyParser(w, r)
 	if body == nil {
 		return false
 	}
 
-	if !controllerMethodValidation(w, r, body, url, validateFn) {
+	if !controllerMethodValidation(w, r, body, validateFn) {
 		return false
 	}
 
-	if !controllerParseJsonRequest(w, r, body, url, req) {
+	if !controllerParseJsonRequest(w, r, body, req) {
 		return false
 	}
 
-	if !controllerValidateJsonRequest(w, r, url, req) {
+	if !controllerValidateJsonRequest(w, r, req) {
 		return false
 	}
 
 	return true
 }
 
-func contollerBodyParser(w http.ResponseWriter, r *http.Request, url string) []byte {
+func contollerBodyParser(w http.ResponseWriter, r *http.Request) []byte {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.Log.WithFields(
-			logrus.Fields{"method": r.Method, "headers": r.Header, "url": url}).Warning(fmt.Sprintf("Failed to read request body. Error: %v", err.Error()))
+			logrus.Fields{"method": r.Method, "headers": r.Header, "url": r.URL}).Warning(fmt.Sprintf("Failed to read request body. Error: %v", err.Error()))
 
 		w.WriteHeader(http.StatusBadRequest)
 
@@ -49,7 +49,7 @@ func contollerBodyParser(w http.ResponseWriter, r *http.Request, url string) []b
 	return body
 }
 
-func controllerGenerateJsonResponse(w http.ResponseWriter, r *http.Request, url string, res interface{}, statusCode int) {
+func controllerGenerateJsonResponse(w http.ResponseWriter, r *http.Request, res interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
@@ -57,17 +57,14 @@ func controllerGenerateJsonResponse(w http.ResponseWriter, r *http.Request, url 
 	if err != nil {
 		errMsg := fmt.Sprintf("Failed to form JSON response. Error: %v", err.Error())
 		logger.Log.WithFields(
-			logrus.Fields{"method": r.Method, "headers": r.Header, "url": url}).Error(errMsg)
+			logrus.Fields{"method": r.Method, "headers": r.Header, "url": r.URL}).Error(errMsg)
 
 		http.Error(w, errMsg, http.StatusInternalServerError)
 	}
 }
 
-func controllerMethodValidation(w http.ResponseWriter, r *http.Request, body []byte, url string, vaidationFn methodValidationFn) bool {
+func controllerMethodValidation(w http.ResponseWriter, r *http.Request, body []byte, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
-		logger.Log.WithFields(
-			logrus.Fields{"method": r.Method, "headers": r.Header, "body": string(body), "url": url}).Warningf("Incorrect request method %v for '%v'", r.Method, url)
-
 		w.WriteHeader(http.StatusMethodNotAllowed)
 
 		return false
@@ -76,18 +73,17 @@ func controllerMethodValidation(w http.ResponseWriter, r *http.Request, body []b
 	return true
 }
 
-func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, url string, req interface{}) bool {
+func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
 	err := json.Unmarshal(body, req)
 
 	if err != nil {
 		errMsg := fmt.Sprintf("Unable to parse JSON. Error: %v", err.Error())
 		logger.Log.WithFields(
-			logrus.Fields{"method": r.Method, "headers": r.Header, "body": string(body), "url": url}).Error(errMsg)
+			logrus.Fields{"method": r.Method, "headers": r.Header, "body": string(body), "url": r.URL}).Error(errMsg)
 
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewErrorResponse(errMsg),
 			http.StatusBadRequest,
 		)
@@ -98,7 +94,7 @@ func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []b
 	return true
 }
 
-func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, url string, req interface{}) bool {
+func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}) bool {
 	validate := validator.New()
 	validationErrors := validate.Struct(req)
 	if validationErrors != nil {
@@ -112,7 +108,6 @@ func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, url s
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			url,
 			responses.NewValidationErrorResponse(dataErrors),
 			http.StatusUnprocessableEntity,
 		)

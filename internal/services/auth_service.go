@@ -3,7 +3,9 @@ package services
 import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/pkg/logger"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -27,12 +29,36 @@ func NewAuthService(
 	}
 }
 
-func (s *authService) GetRefreshTTL() uint64 {
-	return s.ttlRefresh
+func (s *authService) ExtractEncodedTokenFromHeader(header string) string {
+	if header == "" {
+		return ""
+	}
+
+	prefix := "Bearer "
+	if !strings.HasPrefix(header, prefix) {
+		return ""
+	}
+
+	return strings.TrimPrefix(header, prefix)
 }
 
-func (s *authService) GetSecret() string {
-	return s.secret
+func (s *authService) GetToken(encodedToken string) (*jwt.Token, error) {
+	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.secret), nil
+	})
+
+	if err != nil {
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			exp, err := token.Claims.GetExpirationTime()
+			if err != nil || time.Since(time.Unix(exp.Unix(), 0)) > time.Duration(s.ttlRefresh)*time.Second {
+				return token, err
+			}
+		} else {
+			return token, err
+		}
+	}
+
+	return token, nil
 }
 
 func (s *authService) IssueToken(userId uint64) (string, error) {
