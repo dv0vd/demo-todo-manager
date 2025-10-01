@@ -1,51 +1,50 @@
 services:
   app:
-    container_name: todo-manager_app
-    image: docker.io/golang:1.24.2-bookworm
+    container_name: todo-manager-app
+    image: docker.io/golang:1.25.1-alpine3.22
     volumes:
       - ./:/app
-      # - ./go_packages:/go/pkg/mod
     working_dir: /app
     env_file:
       - ./.env
     command: sh -c '/app/bin/app'
-    # command: sh -c 'cd /app && go mod tidy && go mod vendor && go build -v -o ./bin/app ./cmd && ./bin/app'
     networks:
-      podman_network:
+      todo_manager_network:
         aliases:
-          - todo-manager
+          - app
     restart: unless-stopped
     ports:
       - 8080:8080
     deploy:
       resources:
         limits:
-          cpus: ${TODO_MANAGER_APP_CPUS}
-          memory: ${TODO_MANAGER_APP_MEMORY}
-    # depends_on:
-    #   - db
+          cpus: ${APP_CPUS}
+          memory: ${APP_MEMORY}
+    depends_on:
+      - db
   db:
-    container_name: todo-manager_db
-    image: docker.io/postgres:15.10-bookworm
+    container_name: todo-manager-db
+    image: docker.io/postgres:15.14-alpine
     environment:
-      POSTGRES_DB: ${TODO_MANAGER_DB_NAME}
-      POSTGRES_USER: ${TODO_MANAGER_DB_USER}
-      POSTGRES_PASSWORD: ${TODO_MANAGER_DB_PASSWORD}
-    env_file:
-      - ./.env
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     networks:
-      podman_network:
+      todo_manager_network:
         aliases:
-          - todo-manager-db
-    ports:
-      - 5432:5432
+          - db
     restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: ${TODO_MANAGER_DB_CPUS}
-          memory: ${TODO_MANAGER_DB_MEMORY}
+          cpus: ${DB_CPUS}
+          memory: ${DB_MEMORY}
+    healthcheck:
+      test: pg_isready
+      interval: 5s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
 networks:
-  podman_network:
-    # external: true
+  todo_manager_network:
     driver: bridge

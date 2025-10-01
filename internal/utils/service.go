@@ -11,11 +11,11 @@ func ServiceInitServices() (contracts.EnvService, contracts.UserService, contrac
 	return services.NewEnvService(),
 		services.NewUserService(true),
 		services.NewDBService(
-			os.Getenv("TODO_MANAGER_DB_USER"),
-			os.Getenv("TODO_MANAGER_DB_PASSWORD"),
-			os.Getenv("TODO_MANAGER_DB_HOST"),
-			os.Getenv("TODO_MANAGER_DB_PORT"),
-			os.Getenv("TODO_MANAGER_DB_NAME"),
+			os.Getenv("DB_USER"),
+			os.Getenv("DB_PASSWORD"),
+			os.Getenv("DB_HOST"),
+			os.Getenv("DB_PORT"),
+			os.Getenv("DB_NAME"),
 		),
 		ServicesInitAuthService()
 }

@@ -17,7 +17,7 @@ type userRepository struct {
 }
 
 func NewUserRepositoryPostgres() contracts.UserRepository {
-	db, err := sql.Open("postgres", fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable", os.Getenv("TODO_MANAGER_DB_USER"), os.Getenv("TODO_MANAGER_DB_PASSWORD"), os.Getenv("TODO_MANAGER_DB_HOST"), os.Getenv("TODO_MANAGER_DB_PORT"), os.Getenv("TODO_MANAGER_DB_NAME")))
+	db, err := sql.Open("postgres", fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME")))
 	if err != nil {
 		logger.Log.Fatal(fmt.Sprintf("Error creating connection to user repository. Error: %v", err.Error()))
 	}

@@ -14,30 +14,37 @@ func NewEnvService() contracts.EnvService {
 }
 
 func (s *envService) Validate() bool {
-	value := os.Getenv("TODO_MANAGER_DB_HOST")
+	value := os.Getenv("DB_HOST")
 	if value == "" {
-		logger.Log.Error("TODO_MANAGER_DB_HOST is not set!")
+		logger.Log.Error("DB_HOST is not set!")
 
 		return false
 	}
 
-	value = os.Getenv("TODO_MANAGER_DB_PORT")
+	value = os.Getenv("DB_PORT")
 	if value == "" {
-		logger.Log.Error("TODO_MANAGER_DB_PORT is not set!")
+		logger.Log.Error("DB_PORT is not set!")
 
 		return false
 	}
 
-	value = os.Getenv("TODO_MANAGER_DB_NAME")
+	value = os.Getenv("DB_NAME")
 	if value == "" {
-		logger.Log.Error("TODO_MANAGER_DB_NAME is not set!")
+		logger.Log.Error("DB_NAME is not set!")
 
 		return false
 	}
 
-	value = os.Getenv("TODO_MANAGER_DB_USER")
+	value = os.Getenv("DB_USER")
 	if value == "" {
-		logger.Log.Error("TODO_MANAGER_DB_USER is not set!")
+		logger.Log.Error("DB_USER is not set!")
+
+		return false
+	}
+
+	value = os.Getenv("DB_PASSWORD")
+	if value == "" {
+		logger.Log.Error("DB_PASSWORD is not set!")
 
 		return false
 	}
