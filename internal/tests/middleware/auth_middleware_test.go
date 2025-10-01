@@ -3,7 +3,6 @@ package tests
 import (
 	"demo-todo-manager/internal/utils"
 	"fmt"
-	"os"
 	"strconv"
 	"testing"
 
@@ -64,9 +63,7 @@ func TestAuthMiddleware(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		for key, value := range test.env {
-			os.Setenv(key, value)
-		}
+		utils.TestSetEnv(test.env)
 
 		header := test.header
 		authService := utils.ServicesInitAuthService()
@@ -77,13 +74,11 @@ func TestAuthMiddleware(t *testing.T) {
 			header = fmt.Sprintf("Bearer %v", correctToken)
 		}
 
-		result := utils.MiddlewareAuthCheck(header, authService.GetSecret(), authService.GetRefreshTTL())
+		result := utils.MiddlewareAuthCheck(header, authService)
 		if result != test.expected {
 			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
 		}
 
-		for key, _ := range test.env {
-			os.Unsetenv(key)
-		}
+		utils.TestUnsetEnv(test.env)
 	}
 }
