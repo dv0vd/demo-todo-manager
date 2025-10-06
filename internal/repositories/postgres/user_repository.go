@@ -42,7 +42,7 @@ func (r *userRepository) CloseDBConnection() {
 func (r *userRepository) GetByEmail(email string) (dto.UserDTO, bool) {
 	var userDTO dto.UserDTO
 
-	if err := r.client.QueryRow(fmt.Sprintf("SELECT * FROM %v WHERE email=$1", r.table), email).Scan(&userDTO.ID, &userDTO.Email, &userDTO.Password); err != nil {
+	if err := r.client.QueryRow(fmt.Sprintf("SELECT id, email, password FROM %v WHERE email=$1", r.table), email).Scan(&userDTO.ID, &userDTO.Email, &userDTO.Password); err != nil {
 		if err == sql.ErrNoRows {
 			return userDTO, true
 		}

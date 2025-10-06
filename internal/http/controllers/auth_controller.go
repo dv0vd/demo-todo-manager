@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"demo-todo-manager/internal/contracts"
+	"demo-todo-manager/internal/enums"
 	"demo-todo-manager/internal/http/responses"
 	"net/http"
 	"strconv"
@@ -22,7 +23,13 @@ func (c *authController) GetAuthService() contracts.AuthService {
 }
 
 func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	token, err := c.authService.GetToken(r.Header.Get("Authorization"))
+	if r.Method != enums.HttpMethod.Get {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+
+		return
+	}
+
+	token, err := c.authService.GetToken(c.authService.ExtractEncodedTokenFromHeader(r.Header.Get("Authorization")))
 	if err != nil {
 		controllerGenerateJsonResponse(
 			w,

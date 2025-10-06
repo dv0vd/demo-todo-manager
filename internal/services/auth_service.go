@@ -42,16 +42,21 @@ func (s *authService) ExtractEncodedTokenFromHeader(header string) string {
 	return strings.TrimPrefix(header, prefix)
 }
 
-func (s *authService) GetToken(encodedToken string) (*jwt.Token, error) {
-	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
+func (s *authService) GetToken(extractedToken string) (*jwt.Token, error) {
+	token, err := jwt.Parse(extractedToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.secret), nil
 	})
 
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
 			exp, err := token.Claims.GetExpirationTime()
-			if err != nil || time.Since(time.Unix(exp.Unix(), 0)) > time.Duration(s.ttlRefresh)*time.Second {
+
+			if err != nil {
 				return token, err
+			}
+
+			if time.Since(time.Unix(exp.Unix(), 0)) < time.Duration(s.ttlRefresh)*time.Second {
+				return token, nil
 			}
 		} else {
 			return token, err

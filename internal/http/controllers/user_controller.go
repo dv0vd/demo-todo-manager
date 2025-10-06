@@ -66,7 +66,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := c.authService.IssueToken(userDTO.ID)
+	token, err := c.authService.IssueToken(existedUserDTO.ID)
 	if err != nil {
 		controllerGenerateJsonResponse(
 			w,
