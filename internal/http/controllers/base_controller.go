@@ -20,7 +20,7 @@ func ControllerPreparation(w http.ResponseWriter, r *http.Request, req interface
 		return false
 	}
 
-	if !controllerMethodValidation(w, r, body, validateFn) {
+	if !controllerMethodValidation(w, r, validateFn) {
 		return false
 	}
 
@@ -63,7 +63,7 @@ func controllerGenerateJsonResponse(w http.ResponseWriter, r *http.Request, res 
 	}
 }
 
-func controllerMethodValidation(w http.ResponseWriter, r *http.Request, body []byte, vaidationFn methodValidationFn) bool {
+func controllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 

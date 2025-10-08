@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"demo-todo-manager/internal/contracts"
-	"demo-todo-manager/internal/enums"
+	"demo-todo-manager/internal/http/requests"
 	"demo-todo-manager/internal/http/responses"
 	"net/http"
 	"strconv"
@@ -23,9 +23,7 @@ func (c *authController) GetAuthService() contracts.AuthService {
 }
 
 func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	if r.Method != enums.HttpMethod.Get {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-
+	if !controllerMethodValidation(w, r, requests.RefreshTokenValidateMethod) {
 		return
 	}
 
