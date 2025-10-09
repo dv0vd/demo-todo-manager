@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"demo-todo-manager/internal/enums"
 	"demo-todo-manager/internal/http/responses"
 	"demo-todo-manager/pkg/logger"
 	"encoding/json"
@@ -74,7 +75,11 @@ func controllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidatio
 }
 
 func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
-	err := json.Unmarshal(body, req)
+	if r.Method == enums.HttpMethod.Get {
+		return true
+	}
+
+	err := json.Unmarshal(body, &req)
 
 	if err != nil {
 		errMsg := fmt.Sprintf("Unable to parse JSON. Error: %v", err.Error())
