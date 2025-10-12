@@ -6,6 +6,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type UserIdContextKey string
+
 type AuthService interface {
 	ExtractEncodedTokenFromHeader(string) string
 	GetToken(string) (*jwt.Token, error)

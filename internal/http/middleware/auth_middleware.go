@@ -1,23 +1,39 @@
 package middleware
 
 import (
+	"context"
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/http/responses"
 	"demo-todo-manager/internal/utils"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
-func AuthMiddleware(next http.Handler, authService contracts.AuthService) http.Handler {
+func AuthMiddleware(next http.Handler, authService contracts.AuthService, noteService contracts.NoteService) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !utils.MiddlewareAuthCheck(authHeader, authService) {
 			errorResponse(w, "Invalid token")
-
 			return
 		}
 
+		token, _ := authService.GetToken(authService.ExtractEncodedTokenFromHeader(authHeader))
+
+		subject, err := token.Claims.GetSubject()
+		if err != nil {
+			errorResponse(w, "Invalid token")
+			return
+		}
+		userId, err := strconv.ParseUint(subject, 10, 64)
+		if err != nil {
+			errorResponse(w, "Invalid token")
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), authService.GetUserIdKey(), userId)
+		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
 }

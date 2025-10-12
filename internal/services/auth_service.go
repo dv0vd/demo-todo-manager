@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/pkg/logger"
 	"errors"
@@ -64,6 +65,17 @@ func (s *authService) GetToken(extractedToken string) (*jwt.Token, error) {
 	}
 
 	return token, nil
+}
+
+func (s *authService) GetUserIdFromContext(ctx context.Context) uint64 {
+	userId := ctx.Value(s.GetUserIdKey())
+	return userId.(uint64)
+}
+
+func (s *authService) GetUserIdKey() contracts.UserIdContextKey {
+	const userIDKey contracts.UserIdContextKey = "userId"
+
+	return userIDKey
 }
 
 func (s *authService) IssueToken(userId uint64) (string, error) {
