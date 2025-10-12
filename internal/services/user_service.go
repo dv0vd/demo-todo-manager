@@ -32,6 +32,10 @@ func (s *userService) GetByEmail(email string) (dto.UserDTO, bool) {
 	return s.repository.GetByEmail(email)
 }
 
+func (s *userService) GetById(id uint64) (dto.UserDTO, bool) {
+	return s.repository.GetById(id)
+}
+
 func (s *userService) Store(userDTO dto.UserDTO) (dto.UserDTO, error) {
 	hashedPassword, err := s.HashPassword(userDTO)
 	if err != nil {

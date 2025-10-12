@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func RegisterPrivateRoutes(mux *http.ServeMux, authController contracts.AuthController) {
+func RegisterPrivateRoutes(mux *http.ServeMux, authController contracts.AuthController, noteController contracts.NoteController) {
 	logger.Log.Info("Starting registering private routes")
 
 	mux.Handle(
@@ -16,6 +16,18 @@ func RegisterPrivateRoutes(mux *http.ServeMux, authController contracts.AuthCont
 			middleware.AuthMiddleware(
 				http.HandlerFunc(authController.RefreshToken),
 				authController.GetAuthService(),
+				noteController.GetNoteService(),
+			),
+		),
+	)
+
+	mux.Handle(
+		"/api/notes",
+		middleware.ContentTypeMiddleware(
+			middleware.AuthMiddleware(
+				http.HandlerFunc(noteController.GetAll),
+				authController.GetAuthService(),
+				noteController.GetNoteService(),
 			),
 		),
 	)

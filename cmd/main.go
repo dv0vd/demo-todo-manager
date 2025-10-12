@@ -13,7 +13,7 @@ import (
 func main() {
 	logger.Log.Infof("The server is starting...")
 
-	envService, userService, dbService, authService := utils.ServiceInitServices()
+	envService, userService, dbService, authService, noteService := utils.ServiceInitServices()
 
 	if !envService.Validate() {
 		logger.Log.Fatal("Error starting server: env validation failed")
@@ -21,11 +21,11 @@ func main() {
 
 	dbService.Migrate()
 
-	userController, authController := utils.ControllerInitControllers(userService, authService)
+	userController, authController, noteController := utils.ControllerInitControllers(userService, authService, noteService)
 
 	mux := http.NewServeMux()
 	routes.RegisterPublicRoutes(mux, userController)
-	routes.RegisterPrivateRoutes(mux, authController)
+	routes.RegisterPrivateRoutes(mux, authController, noteController)
 	http.ListenAndServe(":8080", mux)
 
 	// todo - graceful shutdown

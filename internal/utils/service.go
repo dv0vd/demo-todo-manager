@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func ServiceInitServices() (contracts.EnvService, contracts.UserService, contracts.DBService, contracts.AuthService) {
+func ServiceInitServices() (contracts.EnvService, contracts.UserService, contracts.DBService, contracts.AuthService, contracts.NoteService) {
 	return services.NewEnvService(),
 		services.NewUserService(true),
 		services.NewDBService(
@@ -17,7 +17,8 @@ func ServiceInitServices() (contracts.EnvService, contracts.UserService, contrac
 			os.Getenv("DB_PORT"),
 			os.Getenv("DB_NAME"),
 		),
-		ServicesInitAuthService()
+		ServicesInitAuthService(),
+		services.NewNoteService(true)
 }
 
 func ServicesInitAuthService() contracts.AuthService {

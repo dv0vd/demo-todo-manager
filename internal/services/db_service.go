@@ -34,8 +34,12 @@ func NewDBService(
 	}
 }
 
-func (s *dbService) CloseConnections(userService contracts.UserService) {
+func (s *dbService) CloseConnections(
+	userService contracts.UserService,
+	noteService contracts.NoteService,
+) {
 	userService.CloseDBConnection()
+	noteService.CloseDBConnection()
 }
 
 func (s *dbService) Migrate() {
