@@ -35,6 +35,8 @@ stop:
 
 restart: stop start
 
+restart-dev: stop build start logs-app
+
 create-migration-postgres:
 	podman run --rm -v ./migrations/postgres:/migrations docker.io/migrate/migrate:v4.19.0 create -ext sql -dir migrations -seq ${m}
 
@@ -47,6 +49,7 @@ help:
 	@echo -e ${GREEN}start'                        '${WHITE}— start the project${RESET}
 	@echo -e ${GREEN}stop'                         '${WHITE}— stop the project${RESET}
 	@echo -e ${GREEN}restart'                      '${WHITE}— restart the project${RESET}
+	@echo -e ${GREEN}restart-dev'                  '${WHITE}— restart the project for development${RESET}
 	@echo -e ${GREEN}logs-app'                     '${WHITE}— get project's logs${RESET}
 	@echo -e ${GREEN}enter-app'                    '${WHITE}— enter the database container${RESET}
 	@echo -e ${GREEN}create-migration-postgres'    '${WHITE}— enter the database container${RESET}
