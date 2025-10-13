@@ -95,7 +95,11 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (c *noteController) GetAll(w http.ResponseWriter, r *http.Request) {
+func (c *noteController) GetNoteService() contracts.NoteService {
+	return c.noteService
+}
+
+func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 	var req requests.GetNotesRequest
 
 	if !ControllerPreparation(w, r, &req, requests.GetNotesValidateMethod) {
@@ -133,8 +137,4 @@ func (c *noteController) GetAll(w http.ResponseWriter, r *http.Request) {
 		responses.NewNotesResponse(notes),
 		http.StatusOK,
 	)
-}
-
-func (c *noteController) GetNoteService() contracts.NoteService {
-	return c.noteService
 }
