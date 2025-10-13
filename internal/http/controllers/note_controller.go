@@ -138,3 +138,66 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK,
 	)
 }
+
+func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
+	var req requests.GetNoteRequest
+
+	if !ControllerPreparation(w, r, &req, requests.GetNoteValidateMethod) {
+		return
+	}
+
+	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	if err != nil || noteId <= 0 {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			responses.NewErrorResponse("Incorrect note id"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	userId := c.authService.GetUserIdFromContext(r.Context())
+	_, ok := c.userService.GetById(userId)
+	if !ok {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			responses.NewErrorResponse("User not found"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userId)
+	if !ok {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			responses.NewErrorResponse("Unknown error"),
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	if (noteDTO == dto.NoteDTO{}) {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			responses.NewErrorResponse("Note not found"),
+			http.StatusNotFound,
+		)
+
+		return
+	}
+
+	controllerGenerateJsonResponse(
+		w,
+		r,
+		responses.NewNoteResponse(noteDTO),
+		http.StatusOK,
+	)
+}

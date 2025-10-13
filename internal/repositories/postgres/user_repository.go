@@ -63,7 +63,9 @@ func (r *userRepository) GetById(id uint64) (dto.UserDTO, bool) {
 	var userDTO dto.UserDTO
 	if err := r.client.QueryRow(
 		fmt.Sprintf(
-			"SELECT id, email, password, created_at, updated_at FROM %v WHERE id=$1", r.table), id).Scan(
+			"SELECT id, email, password, created_at, updated_at FROM %v WHERE id=$1",
+			r.table,
+		), id).Scan(
 		&userDTO.ID, &userDTO.Email, &userDTO.Password, &userDTO.CreatedAt, &userDTO.UpdatedAt,
 	); err != nil {
 		if err == sql.ErrNoRows {

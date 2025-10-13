@@ -42,7 +42,15 @@ func (r *noteRepository) CloseDBConnection() {
 func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 	var noteDTO dto.NoteDTO
 
-	if err := r.client.QueryRow(fmt.Sprintf("SELECT id FROM %v WHERE id=$1 AND user_id=$2", r.table), id, userId).Scan(&noteDTO.ID); err != nil {
+	if err := r.client.QueryRow(
+		fmt.Sprintf(
+			"SELECT id, title, description, created_at, updated_at FROM %v WHERE id=$1 AND user_id=$2",
+			r.table),
+		id,
+		userId,
+	).Scan(
+		&noteDTO.ID, &noteDTO.Title, &noteDTO.Description, &noteDTO.CreatedAt, &noteDTO.UpdatedAt,
+	); err != nil {
 		if err == sql.ErrNoRows {
 			return noteDTO, true
 		}

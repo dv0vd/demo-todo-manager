@@ -13,6 +13,7 @@ type NoteController interface {
 	Delete(http.ResponseWriter, *http.Request)
 	Index(http.ResponseWriter, *http.Request)
 	GetNoteService() NoteService
+	Show(http.ResponseWriter, *http.Request)
 }
 
 type UserController interface {
