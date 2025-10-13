@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/http/responses"
 	"demo-todo-manager/internal/utils"
 	"encoding/json"
@@ -11,7 +10,9 @@ import (
 	"strconv"
 )
 
-func AuthMiddleware(next http.Handler, authService contracts.AuthService, noteService contracts.NoteService) http.Handler {
+func AuthMiddleware(next http.Handler) http.Handler {
+	authService := utils.ServicesInitAuthService()
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !utils.MiddlewareAuthCheck(authHeader, authService) {

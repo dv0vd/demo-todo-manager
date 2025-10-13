@@ -5,13 +5,17 @@ import (
 	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/pkg/logger"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
-func RegisterPublicRoutes(mux *http.ServeMux, userController contracts.UserController) {
+func RegisterPublicRoutes(router *chi.Mux, userController contracts.UserController) {
 	logger.Log.Info("Starting registering public routes")
 
-	mux.Handle("/api/signup", middleware.ContentTypeMiddleware(http.HandlerFunc(userController.Signup)))
-	mux.Handle("/api/login", middleware.ContentTypeMiddleware(http.HandlerFunc(userController.Login)))
+	router.Use(middleware.ContentTypeMiddleware)
+
+	router.Post("/login", http.HandlerFunc(userController.Login))
+	router.Post("/signup", http.HandlerFunc(userController.Signup))
 
 	logger.Log.Info("Public routes have been registered successfully")
 }

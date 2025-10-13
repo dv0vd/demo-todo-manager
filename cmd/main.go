@@ -6,6 +6,8 @@ import (
 	"demo-todo-manager/pkg/logger"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
@@ -23,10 +25,12 @@ func main() {
 
 	userController, authController, noteController := utils.ControllerInitControllers(userService, authService, noteService)
 
-	mux := http.NewServeMux()
-	routes.RegisterPublicRoutes(mux, userController)
-	routes.RegisterPrivateRoutes(mux, authController, noteController)
-	http.ListenAndServe(":8080", mux)
+	router := chi.NewRouter()
+	api := chi.NewRouter()
+	routes.RegisterPublicRoutes(api, userController)
+	routes.RegisterPrivateRoutes(api, authController, noteController)
+	router.Mount("/api", api)
+	http.ListenAndServe(":8080", router)
 
 	// todo - graceful shutdown
 	// dbService.CloseConnections(userService)
