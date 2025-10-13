@@ -28,7 +28,9 @@ type EnvService interface {
 
 type NoteService interface {
 	CloseDBConnection()
+	Get(id uint64, userId uint64) (dto.NoteDTO, bool)
 	GetByUserId(userId uint64) ([]dto.NoteDTO, bool)
+	Delete(id uint64, userId uint64) bool
 }
 
 type UserService interface {

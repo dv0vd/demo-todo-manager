@@ -39,6 +39,22 @@ func (r *noteRepository) CloseDBConnection() {
 	}
 }
 
+func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
+	var noteDTO dto.NoteDTO
+
+	if err := r.client.QueryRow(fmt.Sprintf("SELECT id FROM %v WHERE id=$1 AND user_id=$2", r.table), id, userId).Scan(&noteDTO.ID); err != nil {
+		if err == sql.ErrNoRows {
+			return noteDTO, true
+		}
+
+		logger.Log.WithFields(logrus.Fields{"noteId": id}).Errorf("Failed getting note by id '%v'. Error: %v", id, err.Error())
+
+		return dto.NoteDTO{}, false
+	}
+
+	return noteDTO, true
+}
+
 func (r *noteRepository) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
 	notes := []dto.NoteDTO{}
 
@@ -70,4 +86,15 @@ func (r *noteRepository) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
 	}
 
 	return notes, true
+}
+
+func (r *noteRepository) Delete(id uint64, userId uint64) bool {
+	_, err := r.client.Exec(fmt.Sprintf("DELETE FROM %v WHERE id=$1 AND user_id=$2", r.table), id, userId)
+	if err != nil {
+		logger.Log.WithFields(logrus.Fields{"noteId": id}).Errorf("Failed deleting note by id '%v'. Error: %v", id, err.Error())
+
+		return false
+	}
+
+	return true
 }

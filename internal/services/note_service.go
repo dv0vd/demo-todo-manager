@@ -24,6 +24,14 @@ func (s *noteService) CloseDBConnection() {
 	s.repository.CloseDBConnection()
 }
 
+func (s *noteService) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
+	return s.repository.Get(id, userId)
+}
+
 func (s *noteService) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
 	return s.repository.GetByUserId(userId)
+}
+
+func (s *noteService) Delete(id uint64, userId uint64) bool {
+	return s.repository.Delete(id, userId)
 }

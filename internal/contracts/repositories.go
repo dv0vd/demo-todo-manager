@@ -4,7 +4,9 @@ import "demo-todo-manager/internal/dto"
 
 type NoteRepository interface {
 	CloseDBConnection()
+	Get(id uint64, userId uint64) (dto.NoteDTO, bool)
 	GetByUserId(userId uint64) ([]dto.NoteDTO, bool)
+	Delete(id uint64, userId uint64) bool
 }
 
 type UserRepository interface {

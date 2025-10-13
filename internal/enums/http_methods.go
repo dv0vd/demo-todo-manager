@@ -1,9 +1,11 @@
 package enums
 
 var HttpMethod = struct {
-	Get  string
-	Post string
+	Get    string
+	Post   string
+	Delete string
 }{
-	Get:  "GET",
-	Post: "POST",
+	Get:    "GET",
+	Post:   "POST",
+	Delete: "DELETE",
 }

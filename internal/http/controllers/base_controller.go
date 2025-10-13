@@ -75,7 +75,7 @@ func controllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidatio
 }
 
 func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
-	if r.Method == enums.HttpMethod.Get {
+	if r.Method == enums.HttpMethod.Get || r.Method == enums.HttpMethod.Delete {
 		return true
 	}
 

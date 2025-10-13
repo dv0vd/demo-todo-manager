@@ -10,6 +10,7 @@ type AuthController interface {
 }
 
 type NoteController interface {
+	Delete(http.ResponseWriter, *http.Request)
 	GetAll(http.ResponseWriter, *http.Request)
 	GetNoteService() NoteService
 }
