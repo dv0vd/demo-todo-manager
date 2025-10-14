@@ -18,7 +18,7 @@ type notesResponse struct {
 	Data    notesData `json:"data"`
 }
 
-func NewNotesResponse(notes []dto.NoteDTO) notesResponse {
+func NotesResponse(notes []dto.NoteDTO) notesResponse {
 	result := []note{}
 
 	for _, noteDTO := range notes {

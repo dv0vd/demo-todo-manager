@@ -43,7 +43,7 @@ func errorResponse(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnauthorized)
 
-	err := json.NewEncoder(w).Encode(responses.NewErrorResponse(message))
+	err := json.NewEncoder(w).Encode(responses.ErrorResponse(message))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Failed to form JSON response. Error: %v", err.Error()), http.StatusUnauthorized)
 	}

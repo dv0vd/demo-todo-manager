@@ -10,7 +10,7 @@ type userLoginResponse struct {
 	Data    userLoginData `json:"data"`
 }
 
-func NewUserLoginResponse(token string) userLoginResponse {
+func UserLoginResponse(token string) userLoginResponse {
 	return userLoginResponse{
 		Success: true,
 		Message: "User logged in successfully",

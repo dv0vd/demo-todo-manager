@@ -10,7 +10,7 @@ type tokenRefreshResponse struct {
 	Data    tokenRefreshData `json:"data"`
 }
 
-func NewTokenRefreshResponse(token string) tokenRefreshResponse {
+func TokenRefreshResponse(token string) tokenRefreshResponse {
 	return tokenRefreshResponse{
 		Success: true,
 		Message: "Token refreshed successfully",

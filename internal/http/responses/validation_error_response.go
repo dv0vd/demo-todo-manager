@@ -6,7 +6,7 @@ type validationErrorResponse struct {
 	Data    []string `json:"data"`
 }
 
-func NewValidationErrorResponse(data []string) validationErrorResponse {
+func ValidationErrorResponse(data []string) validationErrorResponse {
 	return validationErrorResponse{
 		Success: false,
 		Message: "Validation errors",

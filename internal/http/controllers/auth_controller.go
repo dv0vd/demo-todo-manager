@@ -33,7 +33,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Invalid token"),
+			baseResponses.ErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -45,7 +45,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Invalid token"),
+			baseResponses.ErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -57,7 +57,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Invalid token"),
+			baseResponses.ErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -69,7 +69,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Invalid token"),
+			baseResponses.ErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -79,7 +79,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		responses.NewTokenRefreshResponse(newToken),
+		responses.TokenRefreshResponse(newToken),
 		http.StatusOK,
 	)
 }

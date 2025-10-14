@@ -89,7 +89,7 @@ func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []b
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse(errMsg),
+			responses.ErrorResponse(errMsg),
 			http.StatusBadRequest,
 		)
 
@@ -113,7 +113,7 @@ func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, req i
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewValidationErrorResponse(dataErrors),
+			responses.ValidationErrorResponse(dataErrors),
 			http.StatusUnprocessableEntity,
 		)
 

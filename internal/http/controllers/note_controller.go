@@ -38,7 +38,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Incorrect note id"),
+			baseResponses.ErrorResponse("Incorrect note id"),
 			http.StatusBadRequest,
 		)
 
@@ -51,7 +51,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("User not found"),
+			baseResponses.ErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -63,7 +63,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -74,7 +74,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Note not found"),
+			baseResponses.ErrorResponse("Note not found"),
 			http.StatusNotFound,
 		)
 
@@ -86,7 +86,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -108,7 +108,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Incorrect note id"),
+			baseResponses.ErrorResponse("Incorrect note id"),
 			http.StatusBadRequest,
 		)
 
@@ -121,7 +121,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("User not found"),
+			baseResponses.ErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -133,7 +133,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -144,7 +144,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Note not found"),
+			baseResponses.ErrorResponse("Note not found"),
 			http.StatusBadRequest,
 		)
 
@@ -157,7 +157,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -167,7 +167,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		responses.NewNoteResponse(noteDTO),
+		responses.NoteResponse(noteDTO),
 		http.StatusOK,
 	)
 }
@@ -189,7 +189,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("User not found"),
+			baseResponses.ErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -201,7 +201,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -211,7 +211,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		responses.NewNotesResponse(notes),
+		responses.NotesResponse(notes),
 		http.StatusOK,
 	)
 }
@@ -228,7 +228,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Incorrect note id"),
+			baseResponses.ErrorResponse("Incorrect note id"),
 			http.StatusBadRequest,
 		)
 
@@ -241,7 +241,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("User not found"),
+			baseResponses.ErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -253,7 +253,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -264,7 +264,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Note not found"),
+			baseResponses.ErrorResponse("Note not found"),
 			http.StatusNotFound,
 		)
 
@@ -274,7 +274,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		responses.NewNoteResponse(noteDTO),
+		responses.NoteResponse(noteDTO),
 		http.StatusOK,
 	)
 }
@@ -292,7 +292,7 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("User not found"),
+			baseResponses.ErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -309,7 +309,7 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			baseResponses.NewErrorResponse("Unknown error"),
+			baseResponses.ErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -319,7 +319,7 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	controllerGenerateJsonResponse(
 		w,
 		r,
-		responses.NewNoteResponse(noteDTO),
+		responses.NoteResponse(noteDTO),
 		http.StatusOK,
 	)
 }

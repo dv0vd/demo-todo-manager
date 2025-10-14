@@ -14,7 +14,7 @@ type noteResponse struct {
 	Data    noteData `json:"data"`
 }
 
-func NewNoteResponse(note dto.NoteDTO) noteResponse {
+func NoteResponse(note dto.NoteDTO) noteResponse {
 	return noteResponse{
 		Success: true,
 		Data: noteData{
