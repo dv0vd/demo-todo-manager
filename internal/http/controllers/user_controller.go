@@ -3,7 +3,7 @@ package controllers
 import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
-	"demo-todo-manager/internal/http/requests"
+	requests "demo-todo-manager/internal/http/requests/user"
 	"demo-todo-manager/internal/http/responses"
 	"net/http"
 )
