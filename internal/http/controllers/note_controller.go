@@ -46,8 +46,8 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := c.authService.GetUserIdFromContext(r.Context())
-	_, ok := c.userService.GetById(userId)
-	if !ok {
+	userDTO, ok := c.userService.GetById(userId)
+	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
@@ -116,8 +116,8 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := c.authService.GetUserIdFromContext(r.Context())
-	_, ok := c.userService.GetById(userId)
-	if !ok {
+	userDTO, ok := c.userService.GetById(userId)
+	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
@@ -185,7 +185,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 
 	userId := c.authService.GetUserIdFromContext(r.Context())
 	_, ok := c.userService.GetById(userId)
-	if !ok {
+	if !ok || userId == 0 {
 		controllerGenerateJsonResponse(
 			w,
 			r,
@@ -236,8 +236,8 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := c.authService.GetUserIdFromContext(r.Context())
-	_, ok := c.userService.GetById(userId)
-	if !ok {
+	userDTO, ok := c.userService.GetById(userId)
+	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
@@ -266,6 +266,51 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 			r,
 			baseResponses.NewErrorResponse("Note not found"),
 			http.StatusNotFound,
+		)
+
+		return
+	}
+
+	controllerGenerateJsonResponse(
+		w,
+		r,
+		responses.NewNoteResponse(noteDTO),
+		http.StatusOK,
+	)
+}
+
+func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
+	var req requests.StoreNoteRequest
+
+	if !ControllerPreparation(w, r, &req, requests.StoreNoteValidateMethod) {
+		return
+	}
+
+	userId := c.authService.GetUserIdFromContext(r.Context())
+	userDTO, ok := c.userService.GetById(userId)
+	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("User not found"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	noteDTO := dto.NoteDTO{
+		Title:       req.Title,
+		Description: req.Description,
+		UserId:      userId,
+	}
+	noteDTO, err := c.noteService.Create(noteDTO, userId)
+	if err != nil {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("Unknown error"),
+			http.StatusInternalServerError,
 		)
 
 		return

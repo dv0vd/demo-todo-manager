@@ -24,6 +24,10 @@ func (s *noteService) CloseDBConnection() {
 	s.repository.CloseDBConnection()
 }
 
+func (s *noteService) Create(noteDTO dto.NoteDTO, userId uint64) (dto.NoteDTO, error) {
+	return s.repository.Create(noteDTO, userId)
+}
+
 func (s *noteService) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 	return s.repository.Get(id, userId)
 }

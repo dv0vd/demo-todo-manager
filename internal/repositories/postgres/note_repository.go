@@ -39,6 +39,24 @@ func (r *noteRepository) CloseDBConnection() {
 	}
 }
 
+func (r *noteRepository) Create(noteDTO dto.NoteDTO, userId uint64) (dto.NoteDTO, error) {
+	if err := r.client.QueryRow(
+		fmt.Sprintf(
+			"INSERT INTO %v(title, description, user_id) VALUES($1, $2, $3) RETURNING id, created_at, updated_at",
+			r.table,
+		),
+		noteDTO.Title,
+		noteDTO.Description,
+		userId,
+	).Scan(&noteDTO.ID, &noteDTO.CreatedAt, &noteDTO.UpdatedAt); err != nil {
+		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO}).Errorf("Error during note creation: %v", err.Error())
+
+		return noteDTO, err
+	}
+
+	return noteDTO, nil
+}
+
 func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 	var noteDTO dto.NoteDTO
 

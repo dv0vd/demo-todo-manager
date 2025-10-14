@@ -30,6 +30,7 @@ func main() {
 	routes.RegisterPublicRoutes(api, userController)
 	routes.RegisterPrivateRoutes(api, authController, noteController)
 	router.Mount("/api", api)
+
 	http.ListenAndServe(":8080", router)
 
 	// todo - graceful shutdown

@@ -15,6 +15,7 @@ type NoteController interface {
 	Index(http.ResponseWriter, *http.Request)
 	GetNoteService() NoteService
 	Show(http.ResponseWriter, *http.Request)
+	Store(http.ResponseWriter, *http.Request)
 }
 
 type UserController interface {
