@@ -4,7 +4,8 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
 	requests "demo-todo-manager/internal/http/requests/note"
-	"demo-todo-manager/internal/http/responses"
+	baseResponses "demo-todo-manager/internal/http/responses"
+	responses "demo-todo-manager/internal/http/responses/note"
 	"net/http"
 	"strconv"
 
@@ -37,7 +38,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Incorrect note id"),
+			baseResponses.NewErrorResponse("Incorrect note id"),
 			http.StatusBadRequest,
 		)
 
@@ -50,7 +51,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("User not found"),
+			baseResponses.NewErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -62,7 +63,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -73,7 +74,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Note not found"),
+			baseResponses.NewErrorResponse("Note not found"),
 			http.StatusNotFound,
 		)
 
@@ -85,7 +86,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -112,7 +113,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("User not found"),
+			baseResponses.NewErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -124,7 +125,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -151,7 +152,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Incorrect note id"),
+			baseResponses.NewErrorResponse("Incorrect note id"),
 			http.StatusBadRequest,
 		)
 
@@ -164,7 +165,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("User not found"),
+			baseResponses.NewErrorResponse("User not found"),
 			http.StatusBadRequest,
 		)
 
@@ -176,7 +177,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -187,7 +188,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Note not found"),
+			baseResponses.NewErrorResponse("Note not found"),
 			http.StatusNotFound,
 		)
 

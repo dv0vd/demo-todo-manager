@@ -4,7 +4,8 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
 	requests "demo-todo-manager/internal/http/requests/user"
-	"demo-todo-manager/internal/http/responses"
+	baseResponses "demo-todo-manager/internal/http/responses"
+	responses "demo-todo-manager/internal/http/responses/user"
 	"net/http"
 )
 
@@ -37,7 +38,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -48,7 +49,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Incorrect login or password"),
+			baseResponses.NewErrorResponse("Incorrect login or password"),
 			http.StatusOK,
 		)
 
@@ -59,7 +60,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Incorrect login or password"),
+			baseResponses.NewErrorResponse("Incorrect login or password"),
 			http.StatusOK,
 		)
 
@@ -71,7 +72,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -103,7 +104,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 
@@ -114,7 +115,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("User already exists"),
+			baseResponses.NewErrorResponse("User already exists"),
 			http.StatusConflict,
 		)
 
@@ -126,7 +127,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Unknown error"),
+			baseResponses.NewErrorResponse("Unknown error"),
 			http.StatusInternalServerError,
 		)
 

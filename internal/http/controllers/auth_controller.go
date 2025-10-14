@@ -3,7 +3,8 @@ package controllers
 import (
 	"demo-todo-manager/internal/contracts"
 	requests "demo-todo-manager/internal/http/requests/auth"
-	"demo-todo-manager/internal/http/responses"
+	baseResponses "demo-todo-manager/internal/http/responses"
+	responses "demo-todo-manager/internal/http/responses/auth"
 	"net/http"
 	"strconv"
 )
@@ -32,7 +33,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Invalid token"),
+			baseResponses.NewErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -44,7 +45,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Invalid token"),
+			baseResponses.NewErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -56,7 +57,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Invalid token"),
+			baseResponses.NewErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
@@ -68,7 +69,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		controllerGenerateJsonResponse(
 			w,
 			r,
-			responses.NewErrorResponse("Invalid token"),
+			baseResponses.NewErrorResponse("Invalid token"),
 			http.StatusBadRequest,
 		)
 
