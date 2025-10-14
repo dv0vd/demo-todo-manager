@@ -7,6 +7,7 @@ type NoteRepository interface {
 	Get(id uint64, userId uint64) (dto.NoteDTO, bool)
 	GetByUserId(userId uint64) ([]dto.NoteDTO, bool)
 	Delete(id uint64, userId uint64) bool
+	Update(noteDTO dto.NoteDTO, userId uint64) bool
 }
 
 type UserRepository interface {

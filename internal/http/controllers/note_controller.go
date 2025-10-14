@@ -96,6 +96,82 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
+	var req requests.UpdateNoteRequest
+
+	if !ControllerPreparation(w, r, &req, requests.UpdateNoteValidateMethod) {
+		return
+	}
+
+	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	if err != nil || noteId <= 0 {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("Incorrect note id"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	userId := c.authService.GetUserIdFromContext(r.Context())
+	_, ok := c.userService.GetById(userId)
+	if !ok {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("User not found"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userId)
+	if !ok {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("Unknown error"),
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	if (noteDTO == dto.NoteDTO{}) {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("Note not found"),
+			http.StatusBadRequest,
+		)
+
+		return
+	}
+
+	noteDTO.Title = req.Title
+	noteDTO.Description = req.Description
+	if !c.noteService.Update(noteDTO, userId) {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.NewErrorResponse("Unknown error"),
+			http.StatusInternalServerError,
+		)
+
+		return
+	}
+
+	controllerGenerateJsonResponse(
+		w,
+		r,
+		responses.NewNoteResponse(noteDTO),
+		http.StatusOK,
+	)
+}
+
 func (c *noteController) GetNoteService() contracts.NoteService {
 	return c.noteService
 }

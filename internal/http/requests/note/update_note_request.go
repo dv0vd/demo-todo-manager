@@ -3,7 +3,7 @@ package requests
 import "demo-todo-manager/internal/enums"
 
 type UpdateNoteRequest struct {
-	Title       string `json:"title" validate:"requried,string"`
+	Title       string `json:"title" validate:"required,min=1,max=255"`
 	Description string `json:"description" validate:"omitempty,min=1"`
 }
 

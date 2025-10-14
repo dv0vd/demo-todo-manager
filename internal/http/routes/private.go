@@ -20,6 +20,7 @@ func RegisterPrivateRoutes(router *chi.Mux, authController contracts.AuthControl
 		private.Route("/notes", func(notes chi.Router) {
 			notes.Get("/", http.HandlerFunc(noteController.Index))
 			notes.Get("/{id}", http.HandlerFunc(noteController.Show))
+			notes.Put("/{id}", http.HandlerFunc(noteController.Edit))
 			notes.Delete("/{id}", http.HandlerFunc(noteController.Delete))
 		})
 	})

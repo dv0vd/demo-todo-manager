@@ -35,3 +35,7 @@ func (s *noteService) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
 func (s *noteService) Delete(id uint64, userId uint64) bool {
 	return s.repository.Delete(id, userId)
 }
+
+func (s *noteService) Update(noteDTO dto.NoteDTO, userId uint64) bool {
+	return s.repository.Update(noteDTO, userId)
+}

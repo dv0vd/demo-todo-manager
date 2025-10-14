@@ -106,3 +106,22 @@ func (r *noteRepository) Delete(id uint64, userId uint64) bool {
 
 	return true
 }
+
+func (r *noteRepository) Update(noteDTO dto.NoteDTO, userId uint64) bool {
+	if _, err := r.client.Exec(
+		fmt.Sprintf(
+			"UPDATE %v SET title=$1, description=$2, updated_at=NOW() WHERE id=$3 AND user_id=$4",
+			r.table,
+		),
+		noteDTO.Title,
+		noteDTO.Description,
+		noteDTO.ID,
+		userId,
+	); err != nil {
+		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO}).Errorf("Failed updating note #%v. Error: %v", noteDTO.ID, err.Error())
+
+		return false
+	}
+
+	return true
+}
