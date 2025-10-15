@@ -1,6 +1,7 @@
 package main
 
 import (
+	"demo-todo-manager/internal/http/controllers"
 	"demo-todo-manager/internal/http/routes"
 	"demo-todo-manager/internal/utils"
 	"demo-todo-manager/pkg/logger"
@@ -23,7 +24,9 @@ func main() {
 
 	dbService.Migrate()
 
-	userController, authController, noteController := utils.ControllerInitControllers(userService, authService, noteService)
+	userController := controllers.NewUserController(userService, authService)
+	authController := controllers.NewAuthController(authService)
+	noteController := controllers.NewNoteController(authService, userService, noteService)
 
 	router := chi.NewRouter()
 	api := chi.NewRouter()

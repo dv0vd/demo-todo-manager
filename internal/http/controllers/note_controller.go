@@ -4,8 +4,8 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
 	requests "demo-todo-manager/internal/http/requests/note"
-	baseResponses "demo-todo-manager/internal/http/responses"
 	responses "demo-todo-manager/internal/http/responses/note"
+	"demo-todo-manager/internal/utils"
 	"net/http"
 	"strconv"
 
@@ -29,7 +29,7 @@ func NewNoteController(authService contracts.AuthService, userService contracts.
 func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	var req requests.DeleteNoteRequest
 
-	if !ControllerPreparation(w, r, &req, requests.DeleteNoteValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.DeleteNoteValidateMethod) {
 		return
 	}
 
@@ -45,30 +45,18 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 
 	note, ok := c.noteService.Get(noteId, userDTO.ID)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
 	if (note == dto.NoteDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Note not found"),
-			http.StatusNotFound,
-		)
-
+		utils.ControllerNotFoundResponse(w, r, "Note not found")
 		return
 	}
 
 	ok = c.noteService.Delete(noteId, userDTO.ID)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -78,7 +66,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 	var req requests.UpdateNoteRequest
 
-	if !ControllerPreparation(w, r, &req, requests.UpdateNoteValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.UpdateNoteValidateMethod) {
 		return
 	}
 
@@ -94,29 +82,23 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 
 	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
 	if (noteDTO == dto.NoteDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Note not found"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerNotFoundResponse(w, r, "Note not found")
 		return
 	}
 
 	noteDTO.Title = req.Title
 	noteDTO.Description = req.Description
 	if !c.noteService.Update(noteDTO, userDTO.ID) {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.NoteResponse(noteDTO),
@@ -131,7 +113,7 @@ func (c *noteController) GetNoteService() contracts.NoteService {
 func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 	var req requests.GetNotesRequest
 
-	if !ControllerPreparation(w, r, &req, requests.GetNotesValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.GetNotesValidateMethod) {
 		return
 	}
 
@@ -142,11 +124,11 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 
 	notes, ok := c.noteService.GetByUserId(userDTO.ID)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.NotesResponse(notes),
@@ -157,7 +139,7 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 	var req requests.GetNoteRequest
 
-	if !ControllerPreparation(w, r, &req, requests.GetNoteValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.GetNoteValidateMethod) {
 		return
 	}
 
@@ -173,22 +155,16 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 
 	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
 	if (noteDTO == dto.NoteDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Note not found"),
-			http.StatusNotFound,
-		)
-
+		utils.ControllerNotFoundResponse(w, r, "Note not found")
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.NoteResponse(noteDTO),
@@ -199,7 +175,7 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	var req requests.StoreNoteRequest
 
-	if !ControllerPreparation(w, r, &req, requests.StoreNoteValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.StoreNoteValidateMethod) {
 		return
 	}
 
@@ -215,11 +191,11 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	}
 	noteDTO, err := c.noteService.Create(noteDTO, userDTO.ID)
 	if err != nil {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.NoteResponse(noteDTO),
@@ -230,13 +206,7 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 func (c *noteController) getNoteIdFromURL(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || noteId <= 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect note id"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "Incorrect note id")
 		return 0, false
 	}
 
@@ -246,25 +216,13 @@ func (c *noteController) getNoteIdFromURL(w http.ResponseWriter, r *http.Request
 func (c *noteController) getUser(w http.ResponseWriter, r *http.Request) (dto.UserDTO, bool) {
 	userId := c.authService.GetUserIdFromContext(r.Context())
 	if userId <= 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "User not found")
 		return dto.UserDTO{}, false
 	}
 
 	userDTO, ok := c.userService.GetById(userId)
 	if (!ok || userDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "User not found")
 		return dto.UserDTO{}, false
 	}
 

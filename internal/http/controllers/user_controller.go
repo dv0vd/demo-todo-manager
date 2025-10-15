@@ -4,8 +4,8 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
 	requests "demo-todo-manager/internal/http/requests/user"
-	baseResponses "demo-todo-manager/internal/http/responses"
 	responses "demo-todo-manager/internal/http/responses/user"
+	"demo-todo-manager/internal/utils"
 	"net/http"
 )
 
@@ -24,7 +24,7 @@ func NewUserController(userService contracts.UserService, authService contracts.
 func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserLoginRequest
 
-	if !ControllerPreparation(w, r, &req, requests.UserLoginValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.UserLoginValidateMethod) {
 		return
 	}
 
@@ -35,39 +35,27 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
 	if (existedUserDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect login or password"),
-			http.StatusOK,
-		)
-
+		utils.ControllerUnauthorizedResponse(w, r, "Incorrect login or password")
 		return
 	}
 
 	if !c.userService.ValidatePassword(userDTO.Password, existedUserDTO.Password) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect login or password"),
-			http.StatusOK,
-		)
-
+		utils.ControllerUnauthorizedResponse(w, r, "Incorrect login or password")
 		return
 	}
 
 	token, err := c.authService.IssueToken(existedUserDTO.ID)
 	if err != nil {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.UserLoginResponse(token),
@@ -78,7 +66,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserSignupRequest
 
-	if !ControllerPreparation(w, r, &req, requests.UserSignupValidateMethod) {
+	if !utils.ControllerPreparation(w, r, &req, requests.UserSignupValidateMethod) {
 		return
 	}
 
@@ -89,28 +77,22 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
 	if (existedUserDTO != dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User already exists"),
-			http.StatusConflict,
-		)
-
+		utils.ControllerConflictResponse(w, r, "User already exists")
 		return
 	}
 
 	insertedUserDTO, err := c.userService.Store(userDTO)
 	if err != nil {
-		controllerGenerateUnknownErrorResponse(w, r)
+		utils.ControllerUnknownErrorResponse(w, r)
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.UserSignupResponse(insertedUserDTO),

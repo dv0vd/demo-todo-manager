@@ -3,8 +3,8 @@ package controllers
 import (
 	"demo-todo-manager/internal/contracts"
 	requests "demo-todo-manager/internal/http/requests/auth"
-	baseResponses "demo-todo-manager/internal/http/responses"
 	responses "demo-todo-manager/internal/http/responses/auth"
+	"demo-todo-manager/internal/utils"
 	"net/http"
 	"strconv"
 )
@@ -24,59 +24,35 @@ func (c *authController) GetAuthService() contracts.AuthService {
 }
 
 func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	if !controllerMethodValidation(w, r, requests.RefreshTokenValidateMethod) {
+	if !utils.ControllerMethodValidation(w, r, requests.RefreshTokenValidateMethod) {
 		return
 	}
 
 	token, err := c.authService.GetToken(c.authService.ExtractEncodedTokenFromHeader(r.Header.Get("Authorization")))
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Invalid token"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "Invalid token")
 		return
 	}
 
 	userId, err := token.Claims.GetSubject()
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Invalid token"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "Invalid token")
 		return
 	}
 
 	userIdConverted, err := strconv.ParseUint(userId, 10, 0)
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Invalid token"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "Invalid token")
 		return
 	}
 
 	newToken, err := c.authService.IssueToken(userIdConverted)
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Invalid token"),
-			http.StatusBadRequest,
-		)
-
+		utils.ControllerBadRequestResponse(w, r, "Invalid token")
 		return
 	}
 
-	controllerGenerateJsonResponse(
+	utils.ControllerJsonResponse(
 		w,
 		r,
 		responses.TokenRefreshResponse(newToken),
