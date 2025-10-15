@@ -33,40 +33,19 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
-	if err != nil || noteId <= 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect note id"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	userId := c.authService.GetUserIdFromContext(r.Context())
-	userDTO, ok := c.userService.GetById(userId)
-	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	note, ok := c.noteService.Get(noteId, userId)
+	noteId, ok := c.getNoteIdFromURL(w, r)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
+		return
+	}
 
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
+		return
+	}
+
+	note, ok := c.noteService.Get(noteId, userDTO.ID)
+	if !ok {
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -81,7 +60,7 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok = c.noteService.Delete(noteId, userId)
+	ok = c.noteService.Delete(noteId, userDTO.ID)
 	if !ok {
 		controllerGenerateJsonResponse(
 			w,
@@ -103,40 +82,19 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
-	if err != nil || noteId <= 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect note id"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	userId := c.authService.GetUserIdFromContext(r.Context())
-	userDTO, ok := c.userService.GetById(userId)
-	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	noteDTO, ok := c.noteService.Get(noteId, userId)
+	noteId, ok := c.getNoteIdFromURL(w, r)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
+		return
+	}
 
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
+	if !ok {
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -153,14 +111,8 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 
 	noteDTO.Title = req.Title
 	noteDTO.Description = req.Description
-	if !c.noteService.Update(noteDTO, userId) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+	if !c.noteService.Update(noteDTO, userDTO.ID) {
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -183,28 +135,14 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId := c.authService.GetUserIdFromContext(r.Context())
-	_, ok := c.userService.GetById(userId)
-	if !ok || userId == 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
 		return
 	}
 
-	notes, ok := c.noteService.GetByUserId(userId)
+	notes, ok := c.noteService.GetByUserId(userDTO.ID)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -223,40 +161,19 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
-	if err != nil || noteId <= 0 {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Incorrect note id"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	userId := c.authService.GetUserIdFromContext(r.Context())
-	userDTO, ok := c.userService.GetById(userId)
-	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
-		return
-	}
-
-	noteDTO, ok := c.noteService.Get(noteId, userId)
+	noteId, ok := c.getNoteIdFromURL(w, r)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
+		return
+	}
 
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
+	if !ok {
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -286,33 +203,19 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId := c.authService.GetUserIdFromContext(r.Context())
-	userDTO, ok := c.userService.GetById(userId)
-	if (!ok || userId == 0 || userDTO == dto.UserDTO{}) {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("User not found"),
-			http.StatusBadRequest,
-		)
-
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
 		return
 	}
 
 	noteDTO := dto.NoteDTO{
 		Title:       req.Title,
 		Description: req.Description,
-		UserId:      userId,
+		UserId:      userDTO.ID,
 	}
-	noteDTO, err := c.noteService.Create(noteDTO, userId)
+	noteDTO, err := c.noteService.Create(noteDTO, userDTO.ID)
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -322,4 +225,48 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 		responses.NoteResponse(noteDTO),
 		http.StatusOK,
 	)
+}
+
+func (c *noteController) getNoteIdFromURL(w http.ResponseWriter, r *http.Request) (uint64, bool) {
+	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	if err != nil || noteId <= 0 {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.ErrorResponse("Incorrect note id"),
+			http.StatusBadRequest,
+		)
+
+		return 0, false
+	}
+
+	return noteId, true
+}
+
+func (c *noteController) getUser(w http.ResponseWriter, r *http.Request) (dto.UserDTO, bool) {
+	userId := c.authService.GetUserIdFromContext(r.Context())
+	if userId <= 0 {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.ErrorResponse("User not found"),
+			http.StatusBadRequest,
+		)
+
+		return dto.UserDTO{}, false
+	}
+
+	userDTO, ok := c.userService.GetById(userId)
+	if (!ok || userDTO == dto.UserDTO{}) {
+		controllerGenerateJsonResponse(
+			w,
+			r,
+			baseResponses.ErrorResponse("User not found"),
+			http.StatusBadRequest,
+		)
+
+		return dto.UserDTO{}, false
+	}
+
+	return userDTO, true
 }

@@ -64,6 +64,15 @@ func controllerGenerateJsonResponse(w http.ResponseWriter, r *http.Request, res 
 	}
 }
 
+func controllerGenerateUnknownErrorResponse(w http.ResponseWriter, r *http.Request) {
+	controllerGenerateJsonResponse(
+		w,
+		r,
+		responses.ErrorResponse("Unknown error"),
+		http.StatusInternalServerError,
+	)
+}
+
 func controllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)

@@ -35,13 +35,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -69,13 +63,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err := c.authService.IssueToken(existedUserDTO.ID)
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -101,13 +89,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
@@ -124,13 +106,7 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 
 	insertedUserDTO, err := c.userService.Store(userDTO)
 	if err != nil {
-		controllerGenerateJsonResponse(
-			w,
-			r,
-			baseResponses.ErrorResponse("Unknown error"),
-			http.StatusInternalServerError,
-		)
-
+		controllerGenerateUnknownErrorResponse(w, r)
 		return
 	}
 
