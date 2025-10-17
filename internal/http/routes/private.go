@@ -12,19 +12,18 @@ import (
 func RegisterPrivateRoutes(router *chi.Mux, authController contracts.AuthController, noteController contracts.NoteController) {
 	logger.Log.Info("Starting registering private routes")
 
-	router.Group(func(private chi.Router) {
-		private.Use(middleware.AuthMiddleware)
-
-		private.Post("/auth/refresh", http.HandlerFunc(authController.RefreshToken))
-
-		private.Route("/notes", func(notes chi.Router) {
-			notes.Get("/", http.HandlerFunc(noteController.Index))
-			notes.Post("/", http.HandlerFunc(noteController.Store))
-			notes.Get("/{id}", http.HandlerFunc(noteController.Show))
-			notes.Put("/{id}", http.HandlerFunc(noteController.Edit))
-			notes.Delete("/{id}", http.HandlerFunc(noteController.Delete))
-		})
+	private := chi.NewRouter()
+	private.Use(middleware.AuthMiddleware)
+	private.Post("/auth/refresh", http.HandlerFunc(authController.RefreshToken))
+	private.Route("/notes", func(notes chi.Router) {
+		notes.Get("/", http.HandlerFunc(noteController.Index))
+		notes.Post("/", http.HandlerFunc(noteController.Store))
+		notes.Get("/{id}", http.HandlerFunc(noteController.Show))
+		notes.Put("/{id}", http.HandlerFunc(noteController.Edit))
+		notes.Delete("/{id}", http.HandlerFunc(noteController.Delete))
 	})
+
+	router.Mount("/", private)
 
 	logger.Log.Info("Private routes have been registered successfully")
 }

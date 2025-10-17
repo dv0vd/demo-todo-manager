@@ -8,12 +8,13 @@ import (
 )
 
 type UserIdContextKey string
+type LocaleContextKey string
 
 type AuthService interface {
 	ExtractEncodedTokenFromHeader(string) string
 	GetToken(string) (*jwt.Token, error)
 	GetUserIdFromContext(context.Context) uint64
-	GetUserIdKey() UserIdContextKey
+	GetUserIdContextKey() UserIdContextKey
 	IssueToken(uint64) (string, error)
 }
 

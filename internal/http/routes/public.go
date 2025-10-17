@@ -2,7 +2,6 @@ package routes
 
 import (
 	"demo-todo-manager/internal/contracts"
-	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/pkg/logger"
 	"net/http"
 
@@ -11,8 +10,6 @@ import (
 
 func RegisterPublicRoutes(router *chi.Mux, userController contracts.UserController) {
 	logger.Log.Info("Starting registering public routes")
-
-	router.Use(middleware.ContentTypeMiddleware)
 
 	router.Post("/login", http.HandlerFunc(userController.Login))
 	router.Post("/signup", http.HandlerFunc(userController.Signup))

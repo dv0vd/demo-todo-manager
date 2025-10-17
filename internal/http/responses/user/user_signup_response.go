@@ -13,10 +13,10 @@ type userSignupResponse struct {
 	Data    userSignupData `json:"data"`
 }
 
-func UserSignupResponse(userDTO dto.UserDTO) userSignupResponse {
+func UserSignupResponse(userDTO dto.UserDTO, message string) userSignupResponse {
 	return userSignupResponse{
 		Success: true,
-		Message: "User created successfully",
+		Message: message,
 		Data: userSignupData{
 			ID:    userDTO.ID,
 			Email: userDTO.Email,

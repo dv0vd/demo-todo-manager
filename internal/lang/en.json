@@ -1,0 +1,34 @@
+[
+    {
+        "id": "auth.invalid_token",
+        "other": "Invalid token"
+    },
+    {
+        "id": "auth.login_failed",
+        "other": "Incorrect login or password"
+    },
+    {
+        "id": "auth.login_succeded",
+        "other": "User logged in successfully"
+    },
+    {
+        "id": "auth.user_exists",
+        "other": "User '{{ .email }}' already exists"
+    },
+    {
+        "id": "auth.user_not_found",
+        "other": "User '{{ .email }}' not found"
+    },
+    {
+        "id": "note.not_found",
+        "other": "Note #{{ .id }} not found"
+    },
+    {
+        "id": "note.incorrect_id",
+        "other": "Incorrect note id"
+    },
+    {
+        "id": "user.created_successfully",
+        "other": "User '{{ .email }}' created successfully"
+    }
+]

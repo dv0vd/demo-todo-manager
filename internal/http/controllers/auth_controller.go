@@ -28,27 +28,29 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	token, err := c.authService.GetToken(c.authService.ExtractEncodedTokenFromHeader(r.Header.Get("Authorization")))
 	if err != nil {
-		utils.ControllerBadRequestResponse(w, r, "Invalid token")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.invalid_token", nil))
 		return
 	}
 
 	userId, err := token.Claims.GetSubject()
 	if err != nil {
-		utils.ControllerBadRequestResponse(w, r, "Invalid token")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.invalid_token", nil))
 		return
 	}
 
 	userIdConverted, err := strconv.ParseUint(userId, 10, 0)
 	if err != nil {
-		utils.ControllerBadRequestResponse(w, r, "Invalid token")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.invalid_token", nil))
 		return
 	}
 
 	newToken, err := c.authService.IssueToken(userIdConverted)
 	if err != nil {
-		utils.ControllerBadRequestResponse(w, r, "Invalid token")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.invalid_token", nil))
 		return
 	}
 

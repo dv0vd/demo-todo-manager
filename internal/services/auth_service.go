@@ -68,11 +68,11 @@ func (s *authService) GetToken(extractedToken string) (*jwt.Token, error) {
 }
 
 func (s *authService) GetUserIdFromContext(ctx context.Context) uint64 {
-	userId := ctx.Value(s.GetUserIdKey())
+	userId := ctx.Value(s.GetUserIdContextKey())
 	return userId.(uint64)
 }
 
-func (s *authService) GetUserIdKey() contracts.UserIdContextKey {
+func (s *authService) GetUserIdContextKey() contracts.UserIdContextKey {
 	const userIDKey contracts.UserIdContextKey = "userId"
 
 	return userIDKey

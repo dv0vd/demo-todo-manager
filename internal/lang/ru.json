@@ -1,0 +1,34 @@
+[
+    {
+        "id": "auth.invalid_token",
+        "other": "Неверный токен"
+    },
+    {
+        "id": "auth.login_failed",
+        "other": "Неверный логин или пароль"
+    },
+    {
+        "id": "auth.login_succeded",
+        "other": "Пользователь '{{ .email }}' успешно авторизован"
+    },
+    {
+        "id": "auth.user_exists",
+        "other": "Пользователь '{{ .email }}' уже существует"
+    },
+    {
+        "id": "auth.user_not_found",
+        "other": "Пользователь не найден"
+    },
+    {
+        "id": "note.not_found",
+        "other": "Заметка #{{ .id }} не найдена"
+    },
+    {
+        "id": "note.incorrect_id",
+        "other": "Неверный идентификатор заметки"
+    },
+    {
+        "id": "user.created_successfully",
+        "other": "Пользователь '{{ .email }}' успешно зарегистрирован"
+    }
+]

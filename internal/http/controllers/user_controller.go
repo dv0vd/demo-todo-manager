@@ -39,13 +39,15 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if (existedUserDTO == dto.UserDTO{}) {
-		utils.ControllerUnauthorizedResponse(w, r, "Incorrect login or password")
+		utils.ControllerUnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
 		return
 	}
 
 	if !c.userService.ValidatePassword(userDTO.Password, existedUserDTO.Password) {
-		utils.ControllerUnauthorizedResponse(w, r, "Incorrect login or password")
+		utils.ControllerUnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
 		return
 	}
 
@@ -58,7 +60,9 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	utils.ControllerJsonResponse(
 		w,
 		r,
-		responses.UserLoginResponse(token),
+		responses.UserLoginResponse(token, localizer.T("auth.login_succeded", map[string]interface{}{
+			"email": userDTO.Email,
+		})),
 		http.StatusOK,
 	)
 }
@@ -81,8 +85,12 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if (existedUserDTO != dto.UserDTO{}) {
-		utils.ControllerConflictResponse(w, r, "User already exists")
+		utils.ControllerConflictResponse(w, r, localizer.T("auth.user_exists", map[string]interface{}{
+			"email": userDTO.Email,
+		}))
 		return
 	}
 
@@ -95,7 +103,9 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	utils.ControllerJsonResponse(
 		w,
 		r,
-		responses.UserSignupResponse(insertedUserDTO),
+		responses.UserSignupResponse(insertedUserDTO, localizer.T("user.created_successfully", map[string]interface{}{
+			"email": userDTO.Email,
+		})),
 		http.StatusCreated,
 	)
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/http/controllers"
+	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/internal/http/routes"
 	"demo-todo-manager/internal/utils"
 	"demo-todo-manager/pkg/logger"
@@ -28,14 +30,20 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 	noteController := controllers.NewNoteController(authService, userService, noteService)
 
-	router := chi.NewRouter()
-	api := chi.NewRouter()
-	routes.RegisterPublicRoutes(api, userController)
-	routes.RegisterPrivateRoutes(api, authController, noteController)
-	router.Mount("/api", api)
-
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8080", initRouter(userController, noteController, authController))
 
 	// todo - graceful shutdown
 	// dbService.CloseConnections(userService)
+}
+
+func initRouter(userController contracts.UserController, noteController contracts.NoteController, authController contracts.AuthController) *chi.Mux {
+	router := chi.NewRouter()
+
+	router.Use(middleware.ContentTypeMiddleware)
+	router.Use(middleware.LocaleMiddleware)
+	routes.RegisterPublicRoutes(router, userController)
+	routes.RegisterPrivateRoutes(router, authController, noteController)
+	router.Mount("/api", router)
+
+	return router
 }

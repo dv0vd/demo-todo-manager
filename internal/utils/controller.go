@@ -3,6 +3,7 @@ package utils
 import (
 	"demo-todo-manager/internal/enums"
 	"demo-todo-manager/internal/http/responses"
+	"demo-todo-manager/pkg/localizer"
 	"demo-todo-manager/pkg/logger"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/text/language"
 )
 
 type methodValidationFn func(string) bool
@@ -40,6 +42,16 @@ func ControllerConflictResponse(w http.ResponseWriter, r *http.Request, message 
 		responses.ErrorResponse(message),
 		http.StatusConflict,
 	)
+}
+
+func ControllerGetLocalizer(r *http.Request) *localizer.Localizer {
+	loc, ok := r.Context().Value(localizer.GetContextKey()).(*localizer.Localizer)
+
+	if ok && loc != nil {
+		return loc
+	}
+
+	return localizer.New(language.English)
 }
 
 func ControllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {

@@ -49,8 +49,12 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if (note == dto.NoteDTO{}) {
-		utils.ControllerNotFoundResponse(w, r, "Note not found")
+		utils.ControllerNotFoundResponse(w, r, localizer.T("note.not_found", map[string]interface{}{
+			"id": noteId,
+		}))
 		return
 	}
 
@@ -86,8 +90,12 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if (noteDTO == dto.NoteDTO{}) {
-		utils.ControllerNotFoundResponse(w, r, "Note not found")
+		utils.ControllerNotFoundResponse(w, r, localizer.T("note.not_found", map[string]interface{}{
+			"id": noteId,
+		}))
 		return
 	}
 
@@ -159,8 +167,12 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if (noteDTO == dto.NoteDTO{}) {
-		utils.ControllerNotFoundResponse(w, r, "Note not found")
+		utils.ControllerNotFoundResponse(w, r, localizer.T("note.not_found", map[string]interface{}{
+			"id": noteId,
+		}))
 		return
 	}
 
@@ -205,8 +217,10 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 
 func (c *noteController) getNoteIdFromURL(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 	noteId, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if err != nil || noteId <= 0 {
-		utils.ControllerBadRequestResponse(w, r, "Incorrect note id")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("note.incorrect_id", nil))
 		return 0, false
 	}
 
@@ -215,14 +229,16 @@ func (c *noteController) getNoteIdFromURL(w http.ResponseWriter, r *http.Request
 
 func (c *noteController) getUser(w http.ResponseWriter, r *http.Request) (dto.UserDTO, bool) {
 	userId := c.authService.GetUserIdFromContext(r.Context())
+	localizer := utils.ControllerGetLocalizer(r)
+
 	if userId <= 0 {
-		utils.ControllerBadRequestResponse(w, r, "User not found")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.user_not_found", nil))
 		return dto.UserDTO{}, false
 	}
 
 	userDTO, ok := c.userService.GetById(userId)
 	if (!ok || userDTO == dto.UserDTO{}) {
-		utils.ControllerBadRequestResponse(w, r, "User not found")
+		utils.ControllerBadRequestResponse(w, r, localizer.T("auth.user_not_found", nil))
 		return dto.UserDTO{}, false
 	}
 
