@@ -14,7 +14,7 @@ type userService struct {
 	repository contracts.UserRepository
 }
 
-func NewUserService(repository bool) contracts.UserService {
+func newUserService(repository bool) contracts.UserService {
 	if repository {
 		return &userService{
 			repository: repositories.NewUserRepositoryPostgres(),

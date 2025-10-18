@@ -189,7 +189,7 @@ func TestEnvServiceValidate(t *testing.T) {
 		},
 	}
 
-	envservice := services.NewEnvService()
+	envservice := services.InitEnvService()
 
 	for _, test := range tests {
 		testutils.SetEnv(test.env)

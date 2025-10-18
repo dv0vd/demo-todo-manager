@@ -10,13 +10,17 @@ func InitAuthService() contracts.AuthService {
 	jwtTtl, _ := strconv.ParseUint(os.Getenv("JWT_TTL"), 10, 0)
 	jwtRefreshTtl, _ := strconv.ParseUint(os.Getenv("JWT_REFRESH_TTL"), 10, 0)
 
-	return NewAuthService(os.Getenv("JWT_SECRET"), jwtTtl, jwtRefreshTtl)
+	return newAuthService(os.Getenv("JWT_SECRET"), jwtTtl, jwtRefreshTtl)
+}
+
+func InitEnvService() contracts.EnvService {
+	return &envService{}
 }
 
 func InitServices() (contracts.EnvService, contracts.UserService, contracts.DBService, contracts.AuthService, contracts.NoteService) {
-	return NewEnvService(),
-		NewUserService(true),
-		NewDBService(
+	return InitEnvService(),
+		InitUserService(true),
+		newDBService(
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASSWORD"),
 			os.Getenv("DB_HOST"),
@@ -24,5 +28,9 @@ func InitServices() (contracts.EnvService, contracts.UserService, contracts.DBSe
 			os.Getenv("DB_NAME"),
 		),
 		InitAuthService(),
-		NewNoteService(true)
+		newNoteService(true)
+}
+
+func InitUserService(repository bool) contracts.UserService {
+	return newUserService(repository)
 }

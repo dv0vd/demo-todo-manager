@@ -1,17 +1,12 @@
 package services
 
 import (
-	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/pkg/logger"
 	"os"
 	"strconv"
 )
 
 type envService struct{}
-
-func NewEnvService() contracts.EnvService {
-	return &envService{}
-}
 
 func (s *envService) Validate() bool {
 	value := os.Getenv("DB_HOST")

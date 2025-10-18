@@ -18,7 +18,7 @@ type authService struct {
 	ttlRefresh uint64
 }
 
-func NewAuthService(
+func newAuthService(
 	secret string,
 	ttl,
 	ttlRefresh uint64,

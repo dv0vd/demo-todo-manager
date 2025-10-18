@@ -16,7 +16,7 @@ type passwords struct {
 }
 
 func TestUserServiceValidatePassword(t *testing.T) {
-	userService := services.NewUserService(false)
+	userService := services.InitUserService(false)
 
 	tests := []struct {
 		name      string

@@ -54,6 +54,10 @@ func JsonResponse(w http.ResponseWriter, r *http.Request, res interface{}, statu
 	}
 }
 
+func initControllers() {
+
+}
+
 func MethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)

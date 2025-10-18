@@ -18,7 +18,7 @@ type dbService struct {
 	database string
 }
 
-func NewDBService(
+func newDBService(
 	user,
 	password,
 	host,

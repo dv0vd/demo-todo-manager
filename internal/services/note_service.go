@@ -10,7 +10,7 @@ type noteService struct {
 	repository contracts.NoteRepository
 }
 
-func NewNoteService(repository bool) contracts.NoteService {
+func newNoteService(repository bool) contracts.NoteService {
 	if repository {
 		return &noteService{
 			repository: repositories.NewNoteRepositoryPostgres(),
