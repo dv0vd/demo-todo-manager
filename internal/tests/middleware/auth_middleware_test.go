@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/internal/utils"
 	"fmt"
 	"strconv"
@@ -74,7 +75,7 @@ func TestAuthMiddleware(t *testing.T) {
 			header = fmt.Sprintf("Bearer %v", correctToken)
 		}
 
-		result := utils.MiddlewareAuthCheck(header, authService)
+		result := middleware.AuthCheck(header, authService)
 		if result != test.expected {
 			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
 		}

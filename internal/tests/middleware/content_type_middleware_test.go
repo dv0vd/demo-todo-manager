@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"demo-todo-manager/internal/utils"
+	"demo-todo-manager/internal/http/middleware"
 	"fmt"
 	"testing"
 
@@ -28,7 +28,7 @@ func TestContentTypeMiddleware(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := utils.MiddlewareContentTypeCheck(test.header)
+		result := middleware.ContentTypeCheck(test.header)
 		if result != test.expected {
 			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
 		}
