@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func RegisterPublicRoutes(router *chi.Mux, userController contracts.UserController) {
+func registerPublicRoutes(router *chi.Mux, userController contracts.UserController) {
 	logger.Log.Info("Starting registering public routes")
 
 	router.Post("/login", http.HandlerFunc(userController.Login))

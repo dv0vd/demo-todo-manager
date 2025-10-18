@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/enums"
 	"demo-todo-manager/internal/http/responses"
 	"demo-todo-manager/pkg/localizer"
@@ -54,8 +55,14 @@ func JsonResponse(w http.ResponseWriter, r *http.Request, res interface{}, statu
 	}
 }
 
-func initControllers() {
-
+func InitControllers(
+	userService contracts.UserService,
+	authService contracts.AuthService,
+	noteService contracts.NoteService,
+) (contracts.UserController, contracts.AuthController, contracts.NoteController) {
+	return newUserController(userService, authService),
+		newAuthController(authService),
+		newNoteController(authService, userService, noteService)
 }
 
 func MethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {

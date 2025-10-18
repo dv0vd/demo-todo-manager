@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func RegisterPrivateRoutes(router *chi.Mux, authController contracts.AuthController, noteController contracts.NoteController) {
+func registerPrivateRoutes(router *chi.Mux, authController contracts.AuthController, noteController contracts.NoteController) {
 	logger.Log.Info("Starting registering private routes")
 
 	private := chi.NewRouter()

@@ -17,7 +17,7 @@ type noteController struct {
 	noteService contracts.NoteService
 }
 
-func NewNoteController(authService contracts.AuthService, userService contracts.UserService, noteService contracts.NoteService) contracts.NoteController {
+func newNoteController(authService contracts.AuthService, userService contracts.UserService, noteService contracts.NoteService) contracts.NoteController {
 	return &noteController{
 		userService: userService,
 		authService: authService,

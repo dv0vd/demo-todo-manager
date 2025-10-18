@@ -13,7 +13,7 @@ type userController struct {
 	authService contracts.AuthService
 }
 
-func NewUserController(userService contracts.UserService, authService contracts.AuthService) contracts.UserController {
+func newUserController(userService contracts.UserService, authService contracts.AuthService) contracts.UserController {
 	return &userController{
 		userService: userService,
 		authService: authService,
