@@ -87,7 +87,7 @@ func (s *authService) IssueToken(userId uint64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString([]byte(s.secret))
 	if err != nil {
-		logger.Log.Warningf("Error issuing token for user '%v'. Error: %v", userId, err.Error())
+		logger.Log.WithField("userId", userId).Warningf("Error issuing token for user '%v'. Error: %v", userId, err.Error())
 
 		return "", err
 	}

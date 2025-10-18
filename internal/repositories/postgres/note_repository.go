@@ -49,7 +49,7 @@ func (r *noteRepository) Create(noteDTO dto.NoteDTO, userId uint64) (dto.NoteDTO
 		noteDTO.Description,
 		userId,
 	).Scan(&noteDTO.ID, &noteDTO.CreatedAt, &noteDTO.UpdatedAt); err != nil {
-		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO}).Errorf("Error during note creation: %v", err.Error())
+		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO, "userId": userId}).Errorf("Error during note creation: %v", err.Error())
 
 		return noteDTO, err
 	}
@@ -73,7 +73,7 @@ func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 			return noteDTO, true
 		}
 
-		logger.Log.WithFields(logrus.Fields{"noteId": id}).Errorf("Failed getting note by id '%v'. Error: %v", id, err.Error())
+		logger.Log.WithFields(logrus.Fields{"noteId": id, "userId": userId}).Errorf("Failed getting note by id '%v'. Error: %v", id, err.Error())
 
 		return dto.NoteDTO{}, false
 	}
@@ -136,7 +136,7 @@ func (r *noteRepository) Update(noteDTO dto.NoteDTO, userId uint64) bool {
 		noteDTO.ID,
 		userId,
 	); err != nil {
-		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO}).Errorf("Failed updating note #%v. Error: %v", noteDTO.ID, err.Error())
+		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO, "userId": userId}).Errorf("Failed updating note #%v. Error: %v", noteDTO.ID, err.Error())
 
 		return false
 	}
