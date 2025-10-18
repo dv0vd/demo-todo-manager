@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"demo-todo-manager/internal/services"
 	"demo-todo-manager/internal/utils"
 	"fmt"
 	"testing"
@@ -10,7 +11,7 @@ import (
 
 func TestAuthServiceExtractEncodedTokenFromHeader(t *testing.T) {
 	prefix := "Bearer "
-	authService := utils.ServicesInitAuthService()
+	authService := services.InitAuthService()
 	encodedToken := faker.Word()
 	fullHeader := fmt.Sprintf("%v%v", prefix, encodedToken)
 

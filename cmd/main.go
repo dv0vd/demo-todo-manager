@@ -5,7 +5,7 @@ import (
 	"demo-todo-manager/internal/http/controllers"
 	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/internal/http/routes"
-	"demo-todo-manager/internal/utils"
+	"demo-todo-manager/internal/services"
 	"demo-todo-manager/pkg/logger"
 	"net/http"
 
@@ -18,7 +18,7 @@ import (
 func main() {
 	logger.Log.Infof("The server is starting...")
 
-	envService, userService, dbService, authService, noteService := utils.ServiceInitServices()
+	envService, userService, dbService, authService, noteService := services.InitServices()
 
 	if !envService.Validate() {
 		logger.Log.Fatal("Error starting server: env validation failed")

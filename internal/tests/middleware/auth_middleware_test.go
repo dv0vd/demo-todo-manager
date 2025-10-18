@@ -2,6 +2,7 @@ package tests
 
 import (
 	"demo-todo-manager/internal/http/middleware"
+	"demo-todo-manager/internal/services"
 	"demo-todo-manager/internal/utils"
 	"fmt"
 	"strconv"
@@ -67,7 +68,7 @@ func TestAuthMiddleware(t *testing.T) {
 		utils.TestSetEnv(test.env)
 
 		header := test.header
-		authService := utils.ServicesInitAuthService()
+		authService := services.InitAuthService()
 
 		if test.generateHeader {
 			userId, _ := strconv.ParseUint(utils.TestGetRandomInt(1, 1000), 10, 0)

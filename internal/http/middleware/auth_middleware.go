@@ -4,7 +4,7 @@ import (
 	"context"
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/http/controllers"
-	"demo-todo-manager/internal/utils"
+	"demo-todo-manager/internal/services"
 	"net/http"
 	"strconv"
 )
@@ -24,7 +24,7 @@ func AuthCheck(header string, authService contracts.AuthService) bool {
 }
 
 func AuthMiddleware(next http.Handler) http.Handler {
-	authService := utils.ServicesInitAuthService()
+	authService := services.InitAuthService()
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
