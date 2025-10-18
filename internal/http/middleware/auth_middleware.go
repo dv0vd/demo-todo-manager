@@ -33,15 +33,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		token, _ := authService.GetToken(authService.ExtractEncodedTokenFromHeader(authHeader))
-
-		subject, err := token.Claims.GetSubject()
-		if err != nil {
-			controllers.UnauthorizedResponse(w, r, "Invalid token")
-			return
-		}
-		userId, err := strconv.ParseUint(subject, 10, 64)
-		if err != nil {
+		userId, ok := TokenClaimsCheck(authHeader, authService)
+		if !ok {
 			controllers.UnauthorizedResponse(w, r, "Invalid token")
 			return
 		}
@@ -50,4 +43,19 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func TokenClaimsCheck(authHeader string, authService contracts.AuthService) (uint64, bool) {
+	token, _ := authService.GetToken(authService.ExtractEncodedTokenFromHeader(authHeader))
+
+	subject, err := token.Claims.GetSubject()
+	if err != nil {
+		return 0, false
+	}
+	userId, err := strconv.ParseUint(subject, 10, 64)
+	if err != nil {
+		return 0, false
+	}
+
+	return userId, true
 }

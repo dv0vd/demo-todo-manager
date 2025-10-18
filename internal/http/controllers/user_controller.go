@@ -50,7 +50,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := c.authService.IssueToken(existedUserDTO.ID)
+	token, err := c.authService.IssueToken(existedUserDTO.ID, true, true)
 	if err != nil {
 		UnknownErrorResponse(w, r)
 		return

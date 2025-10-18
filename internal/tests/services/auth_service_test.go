@@ -42,3 +42,37 @@ func TestAuthServiceExtractEncodedTokenFromHeader(t *testing.T) {
 		testutils.CheckResult(t, test.name, test.expected, result)
 	}
 }
+
+func TestGetToken(t *testing.T) {
+	prefix := "Bearer "
+	authService := services.InitAuthService()
+	encodedToken := faker.Word()
+	fullHeader := fmt.Sprintf("%v%v", prefix, encodedToken)
+
+	tests := []struct {
+		name     string
+		header   string
+		expected string
+	}{
+		{
+			name:     "Header is empty",
+			header:   "",
+			expected: "",
+		},
+		{
+			name:     fmt.Sprintf("Header doesn't contain '%v' prefix", prefix),
+			header:   faker.Word(),
+			expected: "",
+		},
+		{
+			name:     "Correct header",
+			header:   fullHeader,
+			expected: encodedToken,
+		},
+	}
+
+	for _, test := range tests {
+		result := authService.ExtractEncodedTokenFromHeader(test.header)
+		testutils.CheckResult(t, test.name, test.expected, result)
+	}
+}

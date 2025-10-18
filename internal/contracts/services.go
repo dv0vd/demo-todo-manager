@@ -15,7 +15,7 @@ type AuthService interface {
 	GetToken(string) (*jwt.Token, error)
 	GetUserIdFromContext(context.Context) uint64
 	GetUserIdContextKey() UserIdContextKey
-	IssueToken(uint64) (string, error)
+	IssueToken(uint64, bool, bool) (string, error)
 }
 
 type DBService interface {

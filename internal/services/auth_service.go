@@ -44,24 +44,33 @@ func (s *authService) ExtractEncodedTokenFromHeader(header string) string {
 }
 
 func (s *authService) GetToken(extractedToken string) (*jwt.Token, error) {
-	token, err := jwt.Parse(extractedToken, func(token *jwt.Token) (interface{}, error) {
+	сlaims := &jwt.RegisteredClaims{}
+	token, err := jwt.ParseWithClaims(extractedToken, сlaims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.secret), nil
 	})
 
-	if err != nil {
-		if errors.Is(err, jwt.ErrTokenExpired) {
-			exp, err := token.Claims.GetExpirationTime()
+	if err != nil || token == nil {
+		return nil, err
+	}
 
-			if err != nil {
-				return token, err
-			}
+	claims, ok := token.Claims.(*jwt.RegisteredClaims)
 
-			if time.Since(time.Unix(exp.Unix(), 0)) < time.Duration(s.ttlRefresh)*time.Second {
-				return token, nil
-			}
-		} else {
+	if !ok || claims == nil || claims.ExpiresAt == nil {
+		return token, errors.New("token has invalid claims")
+	}
+
+	if errors.Is(err, jwt.ErrTokenExpired) {
+		exp, err := token.Claims.GetExpirationTime()
+
+		if err != nil {
 			return token, err
 		}
+
+		if time.Since(time.Unix(exp.Unix(), 0)) < time.Duration(s.ttlRefresh)*time.Second {
+			return token, nil
+		}
+	} else {
+		return token, err
 	}
 
 	return token, nil
@@ -78,10 +87,15 @@ func (s *authService) GetUserIdContextKey() contracts.UserIdContextKey {
 	return userIDKey
 }
 
-func (s *authService) IssueToken(userId uint64) (string, error) {
-	claims := jwt.RegisteredClaims{
-		Subject:   fmt.Sprint(userId),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(s.ttl) * time.Second)),
+func (s *authService) IssueToken(userId uint64, withSubject, withExpiration bool) (string, error) {
+	claims := jwt.RegisteredClaims{}
+
+	if withSubject {
+		claims.Subject = fmt.Sprint(userId)
+	}
+
+	if withExpiration {
+		claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Duration(s.ttl) * time.Second))
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

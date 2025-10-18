@@ -47,7 +47,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newToken, err := c.authService.IssueToken(userIdConverted)
+	newToken, err := c.authService.IssueToken(userIdConverted, true, true)
 	if err != nil {
 		BadRequestResponse(w, r, localizer.T("auth.invalid_token", nil))
 		return
