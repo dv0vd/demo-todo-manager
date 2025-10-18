@@ -1,4 +1,4 @@
-package utils
+package controllers
 
 import (
 	"demo-todo-manager/internal/enums"
@@ -17,7 +17,30 @@ import (
 
 type methodValidationFn func(string) bool
 
-func ControllerJsonResponse(w http.ResponseWriter, r *http.Request, res interface{}, statusCode int) {
+func BadRequestResponse(w http.ResponseWriter, r *http.Request, message string) {
+	baseErrorResponse(w, r, message, http.StatusBadRequest)
+}
+
+func ConflictResponse(w http.ResponseWriter, r *http.Request, message string) {
+	JsonResponse(
+		w,
+		r,
+		responses.ErrorResponse(message),
+		http.StatusConflict,
+	)
+}
+
+func GetLocalizer(r *http.Request) *localizer.Localizer {
+	loc, ok := r.Context().Value(localizer.GetContextKey()).(*localizer.Localizer)
+
+	if ok && loc != nil {
+		return loc
+	}
+
+	return localizer.New(language.English)
+}
+
+func JsonResponse(w http.ResponseWriter, r *http.Request, res interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
@@ -31,30 +54,7 @@ func ControllerJsonResponse(w http.ResponseWriter, r *http.Request, res interfac
 	}
 }
 
-func ControllerBadRequestResponse(w http.ResponseWriter, r *http.Request, message string) {
-	controllerBaseResponse(w, r, message, http.StatusBadRequest)
-}
-
-func ControllerConflictResponse(w http.ResponseWriter, r *http.Request, message string) {
-	ControllerJsonResponse(
-		w,
-		r,
-		responses.ErrorResponse(message),
-		http.StatusConflict,
-	)
-}
-
-func ControllerGetLocalizer(r *http.Request) *localizer.Localizer {
-	loc, ok := r.Context().Value(localizer.GetContextKey()).(*localizer.Localizer)
-
-	if ok && loc != nil {
-		return loc
-	}
-
-	return localizer.New(language.English)
-}
-
-func ControllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
+func MethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 
@@ -64,33 +64,33 @@ func ControllerMethodValidation(w http.ResponseWriter, r *http.Request, vaidatio
 	return true
 }
 
-func ControllerNotFoundResponse(w http.ResponseWriter, r *http.Request, message string) {
-	controllerBaseResponse(w, r, message, http.StatusNotFound)
+func NotFoundResponse(w http.ResponseWriter, r *http.Request, message string) {
+	baseErrorResponse(w, r, message, http.StatusNotFound)
 }
 
-func ControllerPreparation(w http.ResponseWriter, r *http.Request, req interface{}, validateFn methodValidationFn) bool {
-	body := contollerBodyParser(w, r)
+func Preparation(w http.ResponseWriter, r *http.Request, req interface{}, validateFn methodValidationFn) bool {
+	body := bodyParser(w, r)
 	if body == nil {
 		return false
 	}
 
-	if !ControllerMethodValidation(w, r, validateFn) {
+	if !MethodValidation(w, r, validateFn) {
 		return false
 	}
 
-	if !controllerParseJsonRequest(w, r, body, req) {
+	if !parseJsonRequest(w, r, body, req) {
 		return false
 	}
 
-	if !controllerValidateJsonRequest(w, r, req) {
+	if !validateJsonRequest(w, r, req) {
 		return false
 	}
 
 	return true
 }
 
-func ControllerUnauthorizedResponse(w http.ResponseWriter, r *http.Request, message string) {
-	ControllerJsonResponse(
+func UnauthorizedResponse(w http.ResponseWriter, r *http.Request, message string) {
+	JsonResponse(
 		w,
 		r,
 		responses.ErrorResponse(message),
@@ -98,8 +98,8 @@ func ControllerUnauthorizedResponse(w http.ResponseWriter, r *http.Request, mess
 	)
 }
 
-func ControllerUnknownErrorResponse(w http.ResponseWriter, r *http.Request) {
-	ControllerJsonResponse(
+func UnknownErrorResponse(w http.ResponseWriter, r *http.Request) {
+	JsonResponse(
 		w,
 		r,
 		responses.ErrorResponse("Unknown error"),
@@ -107,8 +107,8 @@ func ControllerUnknownErrorResponse(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-func controllerBaseResponse(w http.ResponseWriter, r *http.Request, message string, statusCode int) {
-	ControllerJsonResponse(
+func baseErrorResponse(w http.ResponseWriter, r *http.Request, message string, statusCode int) {
+	JsonResponse(
 		w,
 		r,
 		responses.ErrorResponse(message),
@@ -116,7 +116,7 @@ func controllerBaseResponse(w http.ResponseWriter, r *http.Request, message stri
 	)
 }
 
-func contollerBodyParser(w http.ResponseWriter, r *http.Request) []byte {
+func bodyParser(w http.ResponseWriter, r *http.Request) []byte {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		logger.Log.WithFields(
@@ -130,7 +130,7 @@ func contollerBodyParser(w http.ResponseWriter, r *http.Request) []byte {
 	return body
 }
 
-func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
+func parseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
 	if r.Method == enums.HttpMethod.Get || r.Method == enums.HttpMethod.Delete {
 		return true
 	}
@@ -142,7 +142,7 @@ func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []b
 		logger.Log.WithFields(
 			logrus.Fields{"method": r.Method, "headers": r.Header, "body": string(body), "url": r.URL}).Error(errMsg)
 
-		ControllerJsonResponse(
+		JsonResponse(
 			w,
 			r,
 			responses.ErrorResponse(errMsg),
@@ -155,7 +155,7 @@ func controllerParseJsonRequest(w http.ResponseWriter, r *http.Request, body []b
 	return true
 }
 
-func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}) bool {
+func validateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}) bool {
 	validate := validator.New()
 	validationErrors := validate.Struct(req)
 	if validationErrors != nil {
@@ -166,7 +166,7 @@ func controllerValidateJsonRequest(w http.ResponseWriter, r *http.Request, req i
 				err.Field(), err.Tag()))
 		}
 
-		ControllerJsonResponse(
+		JsonResponse(
 			w,
 			r,
 			responses.ValidationErrorResponse(dataErrors),

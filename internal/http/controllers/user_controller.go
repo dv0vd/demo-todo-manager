@@ -5,7 +5,6 @@ import (
 	"demo-todo-manager/internal/dto"
 	requests "demo-todo-manager/internal/http/requests/user"
 	responses "demo-todo-manager/internal/http/responses/user"
-	"demo-todo-manager/internal/utils"
 	"net/http"
 )
 
@@ -24,7 +23,7 @@ func NewUserController(userService contracts.UserService, authService contracts.
 func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserLoginRequest
 
-	if !utils.ControllerPreparation(w, r, &req, requests.UserLoginValidateMethod) {
+	if !Preparation(w, r, &req, requests.UserLoginValidateMethod) {
 		return
 	}
 
@@ -35,29 +34,29 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		utils.ControllerUnknownErrorResponse(w, r)
+		UnknownErrorResponse(w, r)
 		return
 	}
 
-	localizer := utils.ControllerGetLocalizer(r)
+	localizer := GetLocalizer(r)
 
 	if (existedUserDTO == dto.UserDTO{}) {
-		utils.ControllerUnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
+		UnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
 		return
 	}
 
 	if !c.userService.ValidatePassword(userDTO.Password, existedUserDTO.Password) {
-		utils.ControllerUnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
+		UnauthorizedResponse(w, r, localizer.T("auth.login_failed", nil))
 		return
 	}
 
 	token, err := c.authService.IssueToken(existedUserDTO.ID)
 	if err != nil {
-		utils.ControllerUnknownErrorResponse(w, r)
+		UnknownErrorResponse(w, r)
 		return
 	}
 
-	utils.ControllerJsonResponse(
+	JsonResponse(
 		w,
 		r,
 		responses.UserLoginResponse(token, localizer.T("auth.login_succeded", map[string]interface{}{
@@ -70,7 +69,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserSignupRequest
 
-	if !utils.ControllerPreparation(w, r, &req, requests.UserSignupValidateMethod) {
+	if !Preparation(w, r, &req, requests.UserSignupValidateMethod) {
 		return
 	}
 
@@ -81,14 +80,14 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 
 	existedUserDTO, ok := c.userService.GetByEmail(userDTO.Email)
 	if !ok {
-		utils.ControllerUnknownErrorResponse(w, r)
+		UnknownErrorResponse(w, r)
 		return
 	}
 
-	localizer := utils.ControllerGetLocalizer(r)
+	localizer := GetLocalizer(r)
 
 	if (existedUserDTO != dto.UserDTO{}) {
-		utils.ControllerConflictResponse(w, r, localizer.T("auth.user_exists", map[string]interface{}{
+		ConflictResponse(w, r, localizer.T("auth.user_exists", map[string]interface{}{
 			"email": userDTO.Email,
 		}))
 		return
@@ -96,11 +95,11 @@ func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 
 	insertedUserDTO, err := c.userService.Store(userDTO)
 	if err != nil {
-		utils.ControllerUnknownErrorResponse(w, r)
+		UnknownErrorResponse(w, r)
 		return
 	}
 
-	utils.ControllerJsonResponse(
+	JsonResponse(
 		w,
 		r,
 		responses.UserSignupResponse(insertedUserDTO, localizer.T("user.created_successfully", map[string]interface{}{
