@@ -4,7 +4,7 @@ import (
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/dto"
 	"demo-todo-manager/internal/services"
-	"demo-todo-manager/internal/utils"
+	testutils "demo-todo-manager/internal/tests"
 	"testing"
 
 	"github.com/go-faker/faker/v4"
@@ -37,7 +37,7 @@ func TestUserServiceValidatePassword(t *testing.T) {
 
 	for _, test := range tests {
 		result := userService.ValidatePassword(test.passwords.password, test.passwords.hashedPassword)
-		utils.TestCheckResult(t, test.name, test.expected, result)
+		testutils.CheckResult(t, test.name, test.expected, result)
 	}
 }
 

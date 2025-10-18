@@ -2,7 +2,7 @@ package tests
 
 import (
 	"demo-todo-manager/internal/services"
-	"demo-todo-manager/internal/utils"
+	testutils "demo-todo-manager/internal/tests"
 	"fmt"
 	"testing"
 
@@ -39,6 +39,6 @@ func TestAuthServiceExtractEncodedTokenFromHeader(t *testing.T) {
 
 	for _, test := range tests {
 		result := authService.ExtractEncodedTokenFromHeader(test.header)
-		utils.TestCheckResult(t, test.name, test.expected, result)
+		testutils.CheckResult(t, test.name, test.expected, result)
 	}
 }

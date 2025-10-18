@@ -2,7 +2,7 @@ package tests
 
 import (
 	"demo-todo-manager/internal/services"
-	"demo-todo-manager/internal/utils"
+	testutils "demo-todo-manager/internal/tests"
 	"testing"
 
 	"github.com/go-faker/faker/v4"
@@ -22,8 +22,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: true,
@@ -35,8 +35,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -48,8 +48,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -61,8 +61,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_PORT":         "5432",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -74,8 +74,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_PORT":         "5432",
 				"DB_NAME":         "name",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -86,8 +86,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_HOST":         "localhost",
 				"DB_PORT":         "5432",
 				"DB_NAME":         "name",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -100,7 +100,7 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -113,7 +113,7 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":     "name",
 				"DB_USER":     "user",
 				"DB_PASSWORD": "password",
-				"JWT_TTL":     utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":     testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":  faker.Word(),
 			},
 			expected: false,
@@ -126,8 +126,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 			},
 			expected: false,
 		},
@@ -139,8 +139,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(-1000, -1),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(-1000, -1),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -153,8 +153,8 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(-1000, -1),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(-1000, -1),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -168,7 +168,7 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
 				"JWT_TTL":         faker.Word(),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(1, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(1, 1000),
 				"JWT_SECRET":      faker.Word(),
 			},
 			expected: false,
@@ -181,7 +181,7 @@ func TestEnvServiceValidate(t *testing.T) {
 				"DB_NAME":         "name",
 				"DB_USER":         "user",
 				"DB_PASSWORD":     "password",
-				"JWT_TTL":         utils.TestGetRandomInt(1, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(1, 1000),
 				"JWT_REFRESH_TTL": faker.Word(),
 				"JWT_SECRET":      faker.Word(),
 			},
@@ -192,11 +192,11 @@ func TestEnvServiceValidate(t *testing.T) {
 	envservice := services.NewEnvService()
 
 	for _, test := range tests {
-		utils.TestSetEnv(test.env)
+		testutils.SetEnv(test.env)
 
 		result := envservice.Validate()
-		utils.TestCheckResult(t, test.name, test.expected, result)
+		testutils.CheckResult(t, test.name, test.expected, result)
 
-		utils.TestUnsetEnv(test.env)
+		testutils.UnsetEnv(test.env)
 	}
 }

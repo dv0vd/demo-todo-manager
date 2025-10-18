@@ -3,7 +3,7 @@ package tests
 import (
 	"demo-todo-manager/internal/http/middleware"
 	"demo-todo-manager/internal/services"
-	"demo-todo-manager/internal/utils"
+	testutils "demo-todo-manager/internal/tests"
 	"fmt"
 	"strconv"
 	"testing"
@@ -25,8 +25,8 @@ func TestAuthMiddleware(t *testing.T) {
 			generateHeader: true,
 			env: map[string]string{
 				"JWT_SECRET":      faker.Word(),
-				"JWT_TTL":         utils.TestGetRandomInt(100, 1000),
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(100, 1000),
+				"JWT_TTL":         testutils.GetRandomInt(100, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
 			},
 			expected: true,
 		},
@@ -58,20 +58,20 @@ func TestAuthMiddleware(t *testing.T) {
 			env: map[string]string{
 				"JWT_SECRET":      faker.Word(),
 				"JWT_TTL":         "0",
-				"JWT_REFRESH_TTL": utils.TestGetRandomInt(100, 1000),
+				"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
 			},
 			expected: false,
 		},
 	}
 
 	for _, test := range tests {
-		utils.TestSetEnv(test.env)
+		testutils.SetEnv(test.env)
 
 		header := test.header
 		authService := services.InitAuthService()
 
 		if test.generateHeader {
-			userId, _ := strconv.ParseUint(utils.TestGetRandomInt(1, 1000), 10, 0)
+			userId, _ := strconv.ParseUint(testutils.GetRandomInt(1, 1000), 10, 0)
 			correctToken, _ := authService.IssueToken(userId)
 			header = fmt.Sprintf("Bearer %v", correctToken)
 		}
@@ -81,6 +81,6 @@ func TestAuthMiddleware(t *testing.T) {
 			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
 		}
 
-		utils.TestUnsetEnv(test.env)
+		testutils.UnsetEnv(test.env)
 	}
 }
