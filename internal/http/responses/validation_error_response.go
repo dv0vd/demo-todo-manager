@@ -1,15 +1,15 @@
 package responses
 
-type validationErrorResponse struct {
+type ValidationErrorResponseStruct struct {
 	Success bool     `json:"success"`
 	Message string   `json:"message"`
 	Data    []string `json:"data"`
 }
 
-func ValidationErrorResponse(data []string) validationErrorResponse {
-	return validationErrorResponse{
+func ValidationErrorResponse(data []string, message string) ValidationErrorResponseStruct {
+	return ValidationErrorResponseStruct{
 		Success: false,
-		Message: "Validation errors",
+		Message: message,
 		Data:    data,
 	}
 }

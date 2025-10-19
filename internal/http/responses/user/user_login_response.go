@@ -1,20 +1,20 @@
 package responses
 
-type userLoginData struct {
+type UserLoginData struct {
 	Token string `json:"token"`
 }
 
-type userLoginResponse struct {
+type UserLoginResponseStruct struct {
 	Success bool          `json:"success"`
 	Message string        `json:"message"`
-	Data    userLoginData `json:"data"`
+	Data    UserLoginData `json:"data"`
 }
 
-func UserLoginResponse(token, message string) userLoginResponse {
-	return userLoginResponse{
+func UserLoginResponse(token, message string) UserLoginResponseStruct {
+	return UserLoginResponseStruct{
 		Success: true,
 		Message: message,
-		Data: userLoginData{
+		Data: UserLoginData{
 			Token: token,
 		},
 	}

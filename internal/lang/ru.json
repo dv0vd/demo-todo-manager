@@ -24,6 +24,14 @@
         "other": "Заметка #{{ .id }} не найдена"
     },
     {
+        "id": "auth.token_refreshed",
+        "other": "Токен успешно обновлён"
+    },
+    {
+        "id": "common.validation_errors",
+        "other": "Ошибки валидации"
+    },
+    {
         "id": "note.incorrect_id",
         "other": "Неверный идентификатор заметки"
     },

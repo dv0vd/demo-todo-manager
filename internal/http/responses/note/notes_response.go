@@ -2,36 +2,36 @@ package responses
 
 import "demo-todo-manager/internal/dto"
 
-type note struct {
+type Note struct {
 	ID          uint64 `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-type notesData struct {
-	Notes []note `json:"notes"`
+type NotesData struct {
+	Notes []Note `json:"notes"`
 }
 
-type notesResponse struct {
+type NotesResponseStruct struct {
 	Success bool      `json:"success"`
 	Message string    `json:"message"`
-	Data    notesData `json:"data"`
+	Data    NotesData `json:"data"`
 }
 
-func NotesResponse(notes []dto.NoteDTO) notesResponse {
-	result := []note{}
+func NotesResponse(notes []dto.NoteDTO) NotesResponseStruct {
+	result := []Note{}
 
 	for _, noteDTO := range notes {
-		result = append(result, note{
+		result = append(result, Note{
 			ID:          noteDTO.ID,
 			Title:       noteDTO.Title,
 			Description: noteDTO.Description,
 		})
 	}
 
-	return notesResponse{
+	return NotesResponseStruct{
 		Success: true,
-		Data: notesData{
+		Data: NotesData{
 			Notes: result,
 		},
 	}

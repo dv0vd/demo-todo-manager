@@ -1,20 +1,20 @@
 package responses
 
-type tokenRefreshData struct {
+type TokenRefreshData struct {
 	Token string `json:"token"`
 }
 
-type tokenRefreshResponse struct {
+type TokenRefreshResponseStruct struct {
 	Success bool             `json:"success"`
 	Message string           `json:"message"`
-	Data    tokenRefreshData `json:"data"`
+	Data    TokenRefreshData `json:"data"`
 }
 
-func TokenRefreshResponse(token string) tokenRefreshResponse {
-	return tokenRefreshResponse{
+func TokenRefreshResponse(token, message string) TokenRefreshResponseStruct {
+	return TokenRefreshResponseStruct{
 		Success: true,
-		Message: "Token refreshed successfully",
-		Data: tokenRefreshData{
+		Message: message,
+		Data: TokenRefreshData{
 			Token: token,
 		},
 	}

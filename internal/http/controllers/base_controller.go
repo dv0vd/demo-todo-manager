@@ -177,10 +177,12 @@ func validateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}
 				err.Field(), err.Tag()))
 		}
 
+		localizer := GetLocalizer(r)
+
 		JsonResponse(
 			w,
 			r,
-			responses.ValidationErrorResponse(dataErrors),
+			responses.ValidationErrorResponse(dataErrors, localizer.T("common.validation_errors", nil)),
 			http.StatusUnprocessableEntity,
 		)
 

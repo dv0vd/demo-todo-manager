@@ -2,22 +2,22 @@ package responses
 
 import "demo-todo-manager/internal/dto"
 
-type noteData struct {
+type NoteData struct {
 	ID          uint64 `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-type noteResponse struct {
+type NoteResponseStruct struct {
 	Success bool     `json:"success"`
 	Message string   `json:"message"`
-	Data    noteData `json:"data"`
+	Data    NoteData `json:"data"`
 }
 
-func NoteResponse(note dto.NoteDTO) noteResponse {
-	return noteResponse{
+func NoteResponse(note dto.NoteDTO) NoteResponseStruct {
+	return NoteResponseStruct{
 		Success: true,
-		Data: noteData{
+		Data: NoteData{
 			ID:          note.ID,
 			Title:       note.Title,
 			Description: note.Description,

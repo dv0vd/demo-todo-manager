@@ -3,13 +3,14 @@ package testutils
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"testing"
 
 	"github.com/go-faker/faker/v4"
 )
 
 func CheckResult(t *testing.T, name string, result, expected interface{}) {
-	if result != expected {
+	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("%v: expected '%v', got '%v'", name, expected, result)
 	}
 }

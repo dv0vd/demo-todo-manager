@@ -20,6 +20,14 @@
         "other": "User '{{ .email }}' not found"
     },
     {
+        "id": "auth.token_refreshed",
+        "other": "Token refreshed successfully"
+    },
+    {
+        "id": "common.validation_errors",
+        "other": "Validation errros"
+    },
+    {
         "id": "note.not_found",
         "other": "Note #{{ .id }} not found"
     },

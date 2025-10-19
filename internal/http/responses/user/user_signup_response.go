@@ -2,22 +2,22 @@ package responses
 
 import "demo-todo-manager/internal/dto"
 
-type userSignupData struct {
+type UserSignupData struct {
 	ID    uint64 `json:"id"`
 	Email string `json:"email"`
 }
 
-type userSignupResponse struct {
+type UserSignupResponseStruct struct {
 	Success bool           `json:"success"`
 	Message string         `json:"message"`
-	Data    userSignupData `json:"data"`
+	Data    UserSignupData `json:"data"`
 }
 
-func UserSignupResponse(userDTO dto.UserDTO, message string) userSignupResponse {
-	return userSignupResponse{
+func UserSignupResponse(userDTO dto.UserDTO, message string) UserSignupResponseStruct {
+	return UserSignupResponseStruct{
 		Success: true,
 		Message: message,
-		Data: userSignupData{
+		Data: UserSignupData{
 			ID:    userDTO.ID,
 			Email: userDTO.Email,
 		},

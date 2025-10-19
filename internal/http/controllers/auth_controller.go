@@ -56,7 +56,7 @@ func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	JsonResponse(
 		w,
 		r,
-		responses.TokenRefreshResponse(newToken),
+		responses.TokenRefreshResponse(newToken, localizer.T("auth.token_refreshed", nil)),
 		http.StatusOK,
 	)
 }
