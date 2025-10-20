@@ -28,9 +28,11 @@ func TestContentTypeMiddleware(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := middleware.ContentTypeCheck(test.header)
-		if result != test.expected {
-			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
-		}
+		t.Run(test.name, func(t *testing.T) {
+			result := middleware.ContentTypeCheck(test.header)
+			if result != test.expected {
+				t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
+			}
+		})
 	}
 }

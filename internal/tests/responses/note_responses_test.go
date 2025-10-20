@@ -11,59 +11,65 @@ import (
 )
 
 func TestNoteResponse(t *testing.T) {
-	id, _ := strconv.ParseUint(testutils.GetRandomInt(100, 1000), 10, 64)
-	note := dto.NoteDTO{
-		ID:          id,
-		Title:       faker.Word(),
-		Description: faker.Sentence(),
-	}
+	testName := "Note response"
+	t.Run(testName, func(t *testing.T) {
+		id, _ := strconv.ParseUint(testutils.GetRandomInt(100, 1000), 10, 64)
+		note := dto.NoteDTO{
+			ID:          id,
+			Title:       faker.Word(),
+			Description: faker.Sentence(),
+		}
 
-	testutils.CheckResult(
-		t,
-		"Note response",
-		responses.NoteResponse(note),
-		responses.NoteResponseStruct{
-			Success: true,
-			Data: responses.NoteData{
-				ID:          note.ID,
-				Title:       note.Title,
-				Description: note.Description,
+		testutils.CheckResult(
+			t,
+			testName,
+			responses.NoteResponse(note),
+			responses.NoteResponseStruct{
+				Success: true,
+				Data: responses.NoteData{
+					ID:          note.ID,
+					Title:       note.Title,
+					Description: note.Description,
+				},
 			},
-		},
-	)
+		)
+	})
 }
 
 func TestNotesResponse(t *testing.T) {
-	notesCount, _ := strconv.ParseUint(testutils.GetRandomInt(3, 10), 10, 32)
-	notesDTO := []dto.NoteDTO{}
-	notes := []responses.Note{}
+	testName := "Notes response"
+	t.Run(testName, func(t *testing.T) {
+		notesCount, _ := strconv.ParseUint(testutils.GetRandomInt(3, 10), 10, 32)
+		notesDTO := []dto.NoteDTO{}
+		notes := []responses.Note{}
 
-	for i := uint64(0); i <= notesCount; i++ {
-		id, _ := strconv.ParseUint(testutils.GetRandomInt(100, 1000), 10, 64)
-		title := faker.Word()
-		description := faker.Sentence()
+		for i := uint64(0); i <= notesCount; i++ {
+			id, _ := strconv.ParseUint(testutils.GetRandomInt(100, 1000), 10, 64)
+			title := faker.Word()
+			description := faker.Sentence()
 
-		notesDTO = append(notesDTO, dto.NoteDTO{
-			ID:          id,
-			Title:       title,
-			Description: description,
-		})
-		notes = append(notes, responses.Note{
-			ID:          id,
-			Title:       title,
-			Description: description,
-		})
-	}
+			notesDTO = append(notesDTO, dto.NoteDTO{
+				ID:          id,
+				Title:       title,
+				Description: description,
+			})
+			notes = append(notes, responses.Note{
+				ID:          id,
+				Title:       title,
+				Description: description,
+			})
+		}
 
-	testutils.CheckResult(
-		t,
-		"Notes response",
-		responses.NotesResponse(notesDTO),
-		responses.NotesResponseStruct{
-			Success: true,
-			Data: responses.NotesData{
-				Notes: notes,
+		testutils.CheckResult(
+			t,
+			testName,
+			responses.NotesResponse(notesDTO),
+			responses.NotesResponseStruct{
+				Success: true,
+				Data: responses.NotesData{
+					Notes: notes,
+				},
 			},
-		},
-	)
+		)
+	})
 }

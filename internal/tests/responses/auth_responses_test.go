@@ -9,19 +9,23 @@ import (
 )
 
 func TestTokenRefreshResponse(t *testing.T) {
-	token := faker.Word()
-	message := faker.Word()
+	testName := "Token response"
+	t.Run(testName, func(t *testing.T) {
+		token := faker.Word()
+		message := faker.Word()
 
-	testutils.CheckResult(
-		t,
-		"Token response",
-		responses.TokenRefreshResponse(token, message),
-		responses.TokenRefreshResponseStruct{
-			Success: true,
-			Message: message,
-			Data: responses.TokenRefreshData{
-				Token: token,
+		testutils.CheckResult(
+			t,
+			testName,
+			responses.TokenRefreshResponse(token, message),
+			responses.TokenRefreshResponseStruct{
+				Success: true,
+				Message: message,
+				Data: responses.TokenRefreshData{
+					Token: token,
+				},
 			},
-		},
-	)
+		)
+	})
+
 }

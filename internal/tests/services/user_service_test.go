@@ -36,8 +36,10 @@ func TestUserServiceValidatePassword(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := userService.ValidatePassword(test.passwords.password, test.passwords.hashedPassword)
-		testutils.CheckResult(t, test.name, test.expected, result)
+		t.Run(test.name, func(t *testing.T) {
+			result := userService.ValidatePassword(test.passwords.password, test.passwords.hashedPassword)
+			testutils.CheckResult(t, test.name, test.expected, result)
+		})
 	}
 }
 

@@ -45,8 +45,10 @@ func TestAuthServiceExtractEncodedTokenFromHeader(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := authService.ExtractEncodedTokenFromHeader(test.header)
-		testutils.CheckResult(t, test.name, test.expected, result)
+		t.Run(test.name, func(t *testing.T) {
+			result := authService.ExtractEncodedTokenFromHeader(test.header)
+			testutils.CheckResult(t, test.name, test.expected, result)
+		})
 	}
 }
 
@@ -64,43 +66,65 @@ func TestGetToken(t *testing.T) {
 
 	tokenString, _ := authService.IssueToken(userId, true, true)
 	token, err := authService.GetToken(tokenString)
-	testutils.CheckResult(t, "No error during parsing token with all fields", err, nil)
-
 	userIdStringFromContext, err := token.Claims.GetSubject()
-	testutils.CheckResult(t, "No error during getting subject from token", err, nil)
 
-	userIdFromContext, _ := strconv.ParseUint(userIdStringFromContext, 10, 64)
-	testutils.CheckResult(t, "Token subject is correct", userIdFromContext, userId)
-
-	_, err = token.Claims.GetExpirationTime()
-	testutils.CheckResult(t, "No error during getting expiration from token", err, nil)
+	testName := "No error during parsing token with all fields"
+	t.Run(testName, func(t *testing.T) {
+		testutils.CheckResult(t, testName, err, nil)
+	})
+	testName = "No error during getting subject from token"
+	t.Run(testName, func(t *testing.T) {
+		testutils.CheckResult(t, testName, err, nil)
+	})
+	testName = "Token subject is correct"
+	t.Run(testName, func(t *testing.T) {
+		userIdFromContext, _ := strconv.ParseUint(userIdStringFromContext, 10, 64)
+		testutils.CheckResult(t, testName, userIdFromContext, userId)
+	})
+	testName = "No error during getting expiration from token"
+	t.Run(testName, func(t *testing.T) {
+		_, err = token.Claims.GetExpirationTime()
+		testutils.CheckResult(t, testName, err, nil)
+	})
 
 	tokenString, _ = authService.IssueToken(userId, false, true)
 	token, err = authService.GetToken(tokenString)
-	testutils.CheckResult(t, "No error during parsing token without subject", err, nil)
-	subject, err := token.Claims.GetSubject()
-	testutils.CheckResult(t, "No subject in token without subject", err, nil)
-	testutils.CheckResult(t, "No subject in token without subject", subject, "")
 
-	tokenString, _ = authService.IssueToken(userId, true, false)
-	token, err = authService.GetToken(tokenString)
-	testutils.CheckResult(t, "Error during parsing token without expiration", token, (*jwt.Token)(nil))
-	testutils.CheckResult(t, "Error during parsing token without expiration", errors.Is(err, jwt.ErrTokenMalformed), true)
+	testName = "No error during parsing token without subject"
+	t.Run(testName, func(t *testing.T) {
+		testutils.CheckResult(t, testName, err, nil)
+	})
+	testName = "No subject in token without subject"
+	t.Run(testName, func(t *testing.T) {
+		subject, err := token.Claims.GetSubject()
+		testutils.CheckResult(t, testName, err, nil)
+		testutils.CheckResult(t, testName, subject, "")
+	})
+	testName = "Error during parsing token without expiration"
+	t.Run(testName, func(t *testing.T) {
+		tokenString, _ = authService.IssueToken(userId, true, false)
+		token, err = authService.GetToken(tokenString)
+		testutils.CheckResult(t, testName, token, (*jwt.Token)(nil))
+		testutils.CheckResult(t, testName, errors.Is(err, jwt.ErrTokenMalformed), true)
+	})
+	testName = "Error parsing token with incorrect signature"
+	t.Run(testName, func(t *testing.T) {
+		tokenString, _ = authService.IssueToken(userId, true, false)
 
-	tokenString, _ = authService.IssueToken(userId, true, false)
+		testutils.UnsetEnv(env)
 
-	testutils.UnsetEnv(env)
+		env = map[string]string{
+			"JWT_SECRET":      fmt.Sprintf("%v%v%v", faker.Word(), testutils.GetRandomInt(100, 1000), faker.Word()),
+			"JWT_TTL":         testutils.GetRandomInt(100, 1000),
+			"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
+		}
+		testutils.SetEnv(env)
+		authService = services.InitAuthService()
+		token, err = authService.GetToken(tokenString)
+		testutils.CheckResult(t, testName, token, (*jwt.Token)(nil))
+		testutils.CheckResult(t, testName, errors.Is(err, jwt.ErrSignatureInvalid), true)
+	})
 
-	env = map[string]string{
-		"JWT_SECRET":      fmt.Sprintf("%v%v%v", faker.Word(), testutils.GetRandomInt(100, 1000), faker.Word()),
-		"JWT_TTL":         testutils.GetRandomInt(100, 1000),
-		"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
-	}
-	testutils.SetEnv(env)
-	authService = services.InitAuthService()
-	token, err = authService.GetToken(tokenString)
-	testutils.CheckResult(t, "Error parsing token with incorrect signature", token, (*jwt.Token)(nil))
-	testutils.CheckResult(t, "Error parsing token with incorrect signature", errors.Is(err, jwt.ErrSignatureInvalid), true)
 	testutils.UnsetEnv(env)
 }
 

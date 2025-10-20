@@ -112,33 +112,35 @@ func TestAuthCheckMiddleware(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		testutils.SetEnv(test.env)
+		t.Run(test.name, func(t *testing.T) {
+			testutils.SetEnv(test.env)
 
-		header := test.header
-		authService := services.InitAuthService()
+			header := test.header
+			authService := services.InitAuthService()
 
-		if test.generateHeader {
-			userId, _ := strconv.ParseUint(testutils.GetRandomInt(1, 1000), 10, 0)
-			token, _ := authService.IssueToken(userId, test.headerWithSubject, test.headerWithExpiration)
-			header = fmt.Sprintf("Bearer %v", token)
-		}
+			if test.generateHeader {
+				userId, _ := strconv.ParseUint(testutils.GetRandomInt(1, 1000), 10, 0)
+				token, _ := authService.IssueToken(userId, test.headerWithSubject, test.headerWithExpiration)
+				header = fmt.Sprintf("Bearer %v", token)
+			}
 
-		if test.regenerateEnv {
+			if test.regenerateEnv {
+				testutils.UnsetEnv(test.env)
+				testutils.SetEnv(map[string]string{
+					"JWT_SECRET":      faker.Word(),
+					"JWT_TTL":         "0",
+					"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
+				})
+				authService = services.InitAuthService()
+			}
+
+			result := middleware.AuthCheck(header, authService)
+			if result != test.expected {
+				t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
+			}
+
 			testutils.UnsetEnv(test.env)
-			testutils.SetEnv(map[string]string{
-				"JWT_SECRET":      faker.Word(),
-				"JWT_TTL":         "0",
-				"JWT_REFRESH_TTL": testutils.GetRandomInt(100, 1000),
-			})
-			authService = services.InitAuthService()
-		}
-
-		result := middleware.AuthCheck(header, authService)
-		if result != test.expected {
-			t.Errorf("%v: expected %v, got %v", test.name, test.expected, result)
-		}
-
-		testutils.UnsetEnv(test.env)
+		})
 	}
 }
 

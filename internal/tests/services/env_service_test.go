@@ -192,11 +192,13 @@ func TestEnvServiceValidate(t *testing.T) {
 	envservice := services.InitEnvService()
 
 	for _, test := range tests {
-		testutils.SetEnv(test.env)
+		t.Run(test.name, func(t *testing.T) {
+			testutils.SetEnv(test.env)
 
-		result := envservice.Validate()
-		testutils.CheckResult(t, test.name, test.expected, result)
+			result := envservice.Validate()
+			testutils.CheckResult(t, test.name, test.expected, result)
 
-		testutils.UnsetEnv(test.env)
+			testutils.UnsetEnv(test.env)
+		})
 	}
 }
