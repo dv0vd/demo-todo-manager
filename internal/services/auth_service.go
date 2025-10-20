@@ -54,9 +54,8 @@ func (s *authService) GetToken(extractedToken string) (*jwt.Token, error) {
 	}
 
 	claims, ok := token.Claims.(*jwt.RegisteredClaims)
-
 	if !ok || claims == nil || claims.ExpiresAt == nil {
-		return token, errors.New("token has invalid claims")
+		return nil, jwt.ErrTokenMalformed
 	}
 
 	if errors.Is(err, jwt.ErrTokenExpired) {
