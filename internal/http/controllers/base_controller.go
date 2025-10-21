@@ -167,6 +167,10 @@ func parseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req i
 }
 
 func validateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}) bool {
+	if r.Method == enums.HttpMethod.Get || r.Method == enums.HttpMethod.Delete {
+		return true
+	}
+
 	validate := validator.New()
 	validationErrors := validate.Struct(req)
 	if validationErrors != nil {
