@@ -1,11 +1,17 @@
 package main
 
 import (
+	"context"
 	"demo-todo-manager/internal/http/controllers"
 	"demo-todo-manager/internal/http/routes"
 	"demo-todo-manager/internal/services"
 	"demo-todo-manager/pkg/logger"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -24,8 +30,29 @@ func main() {
 
 	userController, authController, noteController := controllers.InitControllers(userService, authService, noteService)
 
-	http.ListenAndServe(":8080", routes.InitRouter(userController, noteController, authController))
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: routes.InitRouter(userController, noteController, authController),
+	}
 
-	// todo - graceful shutdown
-	// dbService.CloseConnections(userService)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Log.WithField("error", err).Fatalf("Error starting server: %v", err.Error())
+		}
+	}()
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	<-ctx.Done()
+	logger.Log.Infof("Shutting down the server...")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		logger.Log.WithField("error", err).Errorf("Server Shutdown Failed: %v", err.Error())
+	}
+
+	dbService.CloseConnections(userService, noteService)
+	logger.Log.Infof("Server exited successfully")
 }
