@@ -65,14 +65,6 @@ func InitControllers(
 		newNoteController(authService, userService, noteService)
 }
 
-func MethodCheck(method string) bool {
-	if method == enums.HttpMethod.Get || method == enums.HttpMethod.Delete {
-		return true
-	}
-
-	return false
-}
-
 func MethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn methodValidationFn) bool {
 	if !vaidationFn(r.Method) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -81,6 +73,14 @@ func MethodValidation(w http.ResponseWriter, r *http.Request, vaidationFn method
 	}
 
 	return true
+}
+
+func MethodsWithoutBodyCheck(method string) bool {
+	if method == enums.HttpMethod.Get || method == enums.HttpMethod.Delete {
+		return true
+	}
+
+	return false
 }
 
 func NotFoundResponse(w http.ResponseWriter, r *http.Request, message string) {
@@ -150,7 +150,7 @@ func bodyParser(w http.ResponseWriter, r *http.Request) []byte {
 }
 
 func parseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req interface{}) bool {
-	if MethodCheck(r.Method) {
+	if MethodsWithoutBodyCheck(r.Method) {
 		return true
 	}
 
@@ -175,7 +175,7 @@ func parseJsonRequest(w http.ResponseWriter, r *http.Request, body []byte, req i
 }
 
 func validateJsonRequest(w http.ResponseWriter, r *http.Request, req interface{}) bool {
-	if MethodCheck(r.Method) {
+	if MethodsWithoutBodyCheck(r.Method) {
 		return true
 	}
 

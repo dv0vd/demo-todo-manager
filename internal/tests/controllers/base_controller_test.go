@@ -131,6 +131,61 @@ func TestMethodValidation(t *testing.T) {
 	}
 }
 
+func TestMethodsWithoutBodyCheck(t *testing.T) {
+	tests := []struct {
+		name     string
+		method   string
+		expected bool
+	}{
+		{
+			name:     "GET method",
+			method:   http.MethodGet,
+			expected: true,
+		},
+		{
+			name:     "DELETE method",
+			method:   http.MethodDelete,
+			expected: true,
+		},
+		{
+			name:     "POST method",
+			method:   http.MethodPost,
+			expected: false,
+		},
+		{
+			name:     "PATCH method",
+			method:   http.MethodPost,
+			expected: false,
+		},
+		{
+			name:     "PUT method",
+			method:   http.MethodPut,
+			expected: false,
+		},
+		{
+			name:     "OPTIONS method",
+			method:   http.MethodOptions,
+			expected: false,
+		},
+		{
+			name:     "HEAD method",
+			method:   http.MethodHead,
+			expected: false,
+		},
+		{
+			name:     "CONNECT method",
+			method:   http.MethodConnect,
+			expected: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			testutils.CheckResult(t, test.name, controllers.MethodsWithoutBodyCheck(test.method), test.expected)
+		})
+	}
+}
+
 func TestNotFoundResponse(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/", nil)

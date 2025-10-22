@@ -11,7 +11,7 @@ func ContentTypeCheck(header string) bool {
 
 func ContentTypeMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if controllers.MethodCheck(r.Method) {
+		if controllers.MethodsWithoutBodyCheck(r.Method) {
 			next.ServeHTTP(w, r)
 			return
 		}
