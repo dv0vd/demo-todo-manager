@@ -35,10 +35,13 @@ stop:
 
 restart: stop start
 
-restart-fresh: stop build start logs-app
+restart-fresh: stop swagger build start logs-app
 
 create-migration-postgres:
 	podman run --rm -v ./migrations/postgres:/migrations docker.io/migrate/migrate:v4.19.0 create -ext sql -dir migrations -seq ${m}
+
+swagger:
+	podman run --rm -v ./:/app -w /app ghcr.io/swaggo/swag:v1.16.6 init -g ./cmd/main.go
 
 GREEN='\033[1;32m'
 WHITE='\033[1;37m'
@@ -53,3 +56,4 @@ help:
 	@echo -e ${GREEN}logs-app'                     '${WHITE}— get project's logs${RESET}
 	@echo -e ${GREEN}enter-app'                    '${WHITE}— enter the database container${RESET}
 	@echo -e ${GREEN}create-migration-postgres'    '${WHITE}— enter the database container${RESET}
+	@echo -e ${GREEN}swagger'                      '${WHITE}— generate API docs${RESET}
