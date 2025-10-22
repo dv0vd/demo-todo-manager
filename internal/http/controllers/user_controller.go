@@ -20,6 +20,19 @@ func newUserController(userService contracts.UserService, authService contracts.
 	}
 }
 
+// @Summary User login
+// @Description Logs in a user and returns a token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param request body requests.UserLoginRequest true "Login email and password"
+// @Success 200 {object} responses.UserLoginResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 422 {object} responses.ValidationErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /login [post]
 func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserLoginRequest
 

@@ -1,12 +1,12 @@
 package responses
 
 type UserLoginData struct {
-	Token string `json:"token"`
+	Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsIn..."`
 }
 
 type UserLoginResponseStruct struct {
-	Success bool          `json:"success"`
-	Message string        `json:"message"`
+	Success bool          `json:"success" example:"true"`
+	Message string        `json:"message" example:"User logged in successfully"`
 	Data    UserLoginData `json:"data"`
 }
 

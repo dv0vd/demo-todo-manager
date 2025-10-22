@@ -1,8 +1,8 @@
 package responses
 
 type ValidationErrorResponseStruct struct {
-	Success bool     `json:"success"`
-	Message string   `json:"message"`
+	Success bool     `json:"success" example:"false"`
+	Message string   `json:"message" example:"Validation errors"`
 	Data    []string `json:"data"`
 }
 
