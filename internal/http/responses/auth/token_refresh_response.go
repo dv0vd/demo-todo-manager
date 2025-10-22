@@ -1,12 +1,12 @@
 package responses
 
 type TokenRefreshData struct {
-	Token string `json:"token"`
+	Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsIn..."`
 }
 
 type TokenRefreshResponseStruct struct {
-	Success bool             `json:"success"`
-	Message string           `json:"message"`
+	Success bool             `json:"success" example:"true"`
+	Message string           `json:"message" example:"Token refreshed successfully"`
 	Data    TokenRefreshData `json:"data"`
 }
 

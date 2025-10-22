@@ -14,7 +14,7 @@ func registerPrivateRoutes(router *chi.Mux, authController contracts.AuthControl
 
 	private := chi.NewRouter()
 	private.Use(middleware.AuthMiddleware)
-	private.Post("/auth/refresh", http.HandlerFunc(authController.RefreshToken))
+	private.Get("/auth/refresh", http.HandlerFunc(authController.RefreshToken))
 	private.Route("/notes", func(notes chi.Router) {
 		notes.Get("/", http.HandlerFunc(noteController.Index))
 		notes.Post("/", http.HandlerFunc(noteController.Store))

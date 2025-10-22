@@ -3,9 +3,9 @@ package responses
 import "demo-todo-manager/internal/dto"
 
 type Note struct {
-	ID          uint64 `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	ID          uint64 `json:"id" example:"161"`
+	Title       string `json:"title" example:"For Peace"`
+	Description string `json:"description" example:"May all people live safely and without suffering."`
 }
 
 type NotesData struct {
@@ -13,7 +13,7 @@ type NotesData struct {
 }
 
 type NotesResponseStruct struct {
-	Success bool      `json:"success"`
+	Success bool      `json:"success" example:"true"`
 	Message string    `json:"message"`
 	Data    NotesData `json:"data"`
 }

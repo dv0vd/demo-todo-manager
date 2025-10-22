@@ -22,6 +22,16 @@ func (c *authController) GetAuthService() contracts.AuthService {
 	return c.authService
 }
 
+// @Summary Token refresh
+// @Description Refreshes user access token
+// @Tags Auth
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Success 200 {object} responses.TokenRefreshResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Router /auth/refresh [get]
+// @Security ApiKeyAuth
 func (c *authController) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	if !MethodValidation(w, r, requests.RefreshTokenValidateMethod) {
 		return

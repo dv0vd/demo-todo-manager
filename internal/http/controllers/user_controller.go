@@ -22,7 +22,7 @@ func newUserController(userService contracts.UserService, authService contracts.
 
 // @Summary User login
 // @Description Logs in a user and returns a token
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
@@ -30,6 +30,7 @@ func newUserController(userService contracts.UserService, authService contracts.
 // @Success 200 {object} responses.UserLoginResponseStruct
 // @Failure 400 {object} responses.ErrorResponseStruct
 // @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 415 {string} string "Content-Type must be application/json!"
 // @Failure 422 {object} responses.ValidationErrorResponseStruct
 // @Failure 500 {object} responses.ErrorResponseStruct
 // @Router /login [post]
@@ -81,7 +82,7 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 // @Summary User signup
 // @Description Registers a user and returns it's data
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
@@ -90,9 +91,10 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} responses.ErrorResponseStruct
 // @Failure 401 {object} responses.ErrorResponseStruct
 // @Failure 409 {object} responses.ErrorResponseStruct
+// @Failure 415 {string} string "Content-Type must be application/json!"
 // @Failure 422 {object} responses.ValidationErrorResponseStruct
 // @Failure 500 {object} responses.ErrorResponseStruct
-// @Router /login [post]
+// @Router /signup [post]
 func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserSignupRequest
 

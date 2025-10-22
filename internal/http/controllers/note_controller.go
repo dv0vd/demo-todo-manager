@@ -25,6 +25,18 @@ func newNoteController(authService contracts.AuthService, userService contracts.
 	}
 }
 
+// @Summary Delete note
+// @Description Deletes the note identified by its ID. This action cannot be undone
+// @Tags Note
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param id path int true "Note ID"
+// @Success 204
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 404 {object} responses.ErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes/{id} [delete]
+// @Security ApiKeyAuth
 func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	var req requests.DeleteNoteRequest
 
@@ -66,6 +78,22 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// @Summary Update note
+// @Description Fully updates an existing note by its ID. All fields will be overwritten with the provided values.
+// @Tags Note
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param id path int true "Note ID"
+// @Param request body requests.UpdateNoteRequest true "Note data"
+// @Success 200 {object} responses.NoteResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 404 {object} responses.ErrorResponseStruct
+// @Failure 415 {string} string "Content-Type must be application/json!"
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes/{id} [put]
+// @Security ApiKeyAuth
 func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 	var req requests.UpdateNoteRequest
 
@@ -117,6 +145,19 @@ func (c *noteController) GetNoteService() contracts.NoteService {
 	return c.noteService
 }
 
+// @Summary Get all notes
+// @Description Retrieves a list of all notes belonging to the authenticated user.
+// @Tags Note
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Success 200 {object} responses.NotesResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 415 {string} string "Content-Type must be application/json!"
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes [get]
+// @Security ApiKeyAuth
 func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 	var req requests.GetNotesRequest
 
@@ -143,6 +184,20 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// @Summary Get note by ID
+// @Description Returns the note details by its unique ID. Requires authentication.
+// @Tags Note
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param id path int true "Note ID"
+// @Success 200 {object} responses.NoteResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 404 {object} responses.ErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes/{id} [get]
+// @Security ApiKeyAuth
 func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 	var req requests.GetNoteRequest
 
@@ -183,6 +238,20 @@ func (c *noteController) Show(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// @Summary Create a new note
+// @Description Creates a new note with the provided title and content. Returns the created note.
+// @Tags Note
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param request body requests.StoreNoteRequest true "Note data"
+// @Success 200 {object} responses.NoteResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 415 {string} string "Content-Type must be application/json!"
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes [post]
+// @Security ApiKeyAuth
 func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	var req requests.StoreNoteRequest
 

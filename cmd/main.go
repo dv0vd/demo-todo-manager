@@ -24,6 +24,10 @@ import (
 // @host localhost:8080
 // @BasePath /api
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 // @contact.name Viacheslav Davydov
 // @contact.url https://dv0vd.dev
 // @contact.email viacheslav.davydov@dv0vd.xyz
