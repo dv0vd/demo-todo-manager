@@ -3,13 +3,13 @@ package responses
 import "demo-todo-manager/internal/dto"
 
 type UserSignupData struct {
-	ID    uint64 `json:"id"`
-	Email string `json:"email"`
+	ID    uint64 `json:"id" example:"1618"`
+	Email string `json:"email" example:"example@email.com"`
 }
 
 type UserSignupResponseStruct struct {
-	Success bool           `json:"success"`
-	Message string         `json:"message"`
+	Success bool           `json:"success" example:"true"`
+	Message string         `json:"message" example:"User 'example@email.com' created successfully"`
 	Data    UserSignupData `json:"data"`
 }
 

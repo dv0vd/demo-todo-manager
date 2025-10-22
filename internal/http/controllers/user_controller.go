@@ -79,6 +79,20 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// @Summary User signup
+// @Description Registers a user and returns it's data
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param request body requests.UserSignupRequest true "Signup email and password"
+// @Success 200 {object} responses.UserSignupResponseStruct
+// @Failure 400 {object} responses.ErrorResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 409 {object} responses.ErrorResponseStruct
+// @Failure 422 {object} responses.ValidationErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /login [post]
 func (c *userController) Signup(w http.ResponseWriter, r *http.Request) {
 	var req requests.UserSignupRequest
 
