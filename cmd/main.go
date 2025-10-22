@@ -12,11 +12,24 @@ import (
 	"syscall"
 	"time"
 
+	_ "demo-todo-manager/docs"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+// @title Demo Todo Manager API
+// @version 1.0
+// @description Demo REST API for todo management app.
+// @host localhost:8080
+// @BasePath /api
+
+// @contact.name Viacheslav Davydov
+// @contact.url https://dv0vd.dev
+// @contact.email viacheslav.davydov@dv0vd.xyz
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
 func main() {
 	logger.Log.Infof("The server is starting...")
 
