@@ -18,9 +18,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-// @title Demo Todo Manager API
+// @title Demo TODO Manager API
 // @version 1.0
-// @description Demo REST API for todo management app.
+// @description Demo REST API for TODO management app.
 // @BasePath /api
 
 // @securityDefinitions.apikey ApiKeyAuth
