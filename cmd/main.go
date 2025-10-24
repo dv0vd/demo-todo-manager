@@ -21,7 +21,6 @@ import (
 // @title Demo Todo Manager API
 // @version 1.0
 // @description Demo REST API for todo management app.
-// @host localhost:8080
 // @BasePath /api
 
 // @securityDefinitions.apikey ApiKeyAuth
@@ -48,7 +47,7 @@ func main() {
 	userController, authController, noteController := controllers.InitControllers(userService, authService, noteService)
 
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":80",
 		Handler: routes.InitRouter(userController, noteController, authController),
 	}
 

@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"demo-todo-manager/docs"
 	"demo-todo-manager/internal/contracts"
 	"demo-todo-manager/internal/http/middleware"
+	"os"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 
@@ -15,7 +17,8 @@ func InitRouter(
 	authController contracts.AuthController,
 ) *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/swagger/*", httpSwagger.WrapHandler)
+	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	router.Handle("/swagger/*", httpSwagger.WrapHandler)
 
 	api := chi.NewRouter()
 
@@ -23,7 +26,6 @@ func InitRouter(
 	api.Use(middleware.LocaleMiddleware)
 	registerPublicRoutes(api, userController)
 	registerPrivateRoutes(api, authController, noteController)
-	api.Mount("/api", api)
 	router.Mount("/api", api)
 
 	return router

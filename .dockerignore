@@ -1,0 +1,7 @@
+.env
+vendor/
+README.md
+podman-compose.yml
+Makefile
+Containerfile
+.gitignore

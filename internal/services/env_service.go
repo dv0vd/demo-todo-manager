@@ -77,6 +77,13 @@ func (s *envService) Validate() bool {
 		return false
 	}
 
+	value = os.Getenv("HOST")
+	if value == "" {
+		logger.Log.Error("HOST is not set!")
+
+		return false
+	}
+
 	logger.Log.Info("Env validation finished successfully")
 
 	return true
