@@ -151,6 +151,7 @@ func (c *noteController) GetNoteService() contracts.NoteService {
 // @Accept json
 // @Produce json
 // @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param done query boolean false "Filter notes by status: true — completed, false — not completed" Example(true) Default(en)
 // @Success 200 {object} responses.NotesResponseStruct
 // @Failure 400 {object} responses.ErrorResponseStruct
 // @Failure 401 {object} responses.ErrorResponseStruct
@@ -170,7 +171,16 @@ func (c *noteController) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notes, ok := c.noteService.GetByUserId(userDTO.ID)
+	whereClauses := map[string]interface{}{}
+	done := r.URL.Query().Get("done")
+	if done != "" {
+		where, err := strconv.ParseBool(done)
+		if err == nil {
+			whereClauses["done"] = where
+		}
+	}
+
+	notes, ok := c.noteService.GetByUserId(userDTO.ID, whereClauses)
 	if !ok {
 		UnknownErrorResponse(w, r)
 		return

@@ -32,8 +32,8 @@ func (s *noteService) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 	return s.repository.Get(id, userId)
 }
 
-func (s *noteService) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
-	return s.repository.GetByUserId(userId)
+func (s *noteService) GetByUserId(userId uint64, filters map[string]interface{}) ([]dto.NoteDTO, bool) {
+	return s.repository.GetByUserId(userId, filters)
 }
 
 func (s *noteService) Delete(id uint64, userId uint64) bool {

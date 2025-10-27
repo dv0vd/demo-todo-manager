@@ -7,13 +7,15 @@ import (
 	"demo-todo-manager/pkg/logger"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
 
 type noteRepository struct {
-	client *sql.DB
-	table  string
+	client     *sql.DB
+	table      string
+	filterable []string
 }
 
 func NewNoteRepositoryPostgres() contracts.NoteRepository {
@@ -28,8 +30,9 @@ func NewNoteRepositoryPostgres() contracts.NoteRepository {
 	}
 
 	return &noteRepository{
-		client: db,
-		table:  "notes",
+		client:     db,
+		table:      "notes",
+		filterable: []string{"title", "description", "done"},
 	}
 }
 
@@ -81,12 +84,28 @@ func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 	return noteDTO, true
 }
 
-func (r *noteRepository) GetByUserId(userId uint64) ([]dto.NoteDTO, bool) {
+func (r *noteRepository) GetByUserId(userId uint64, filters map[string]interface{}) ([]dto.NoteDTO, bool) {
 	notes := []dto.NoteDTO{}
 
-	rows, err := r.client.Query(fmt.Sprintf("SELECT id, title, description, created_at, updated_at FROM %v WHERE user_id=$1", r.table), userId)
+	whereClauses := []string{"user_id=$1"}
+	whereArgs := []interface{}{userId}
+
+	i := 2
+	for key, where := range filters {
+		for _, allowed := range r.filterable {
+			if key == allowed {
+				whereClauses = append(whereClauses, fmt.Sprintf("%v=$%v", key, i))
+				whereArgs = append(whereArgs, where)
+
+				continue
+			}
+		}
+	}
+
+	query := fmt.Sprintf("SELECT id, title, description, created_at, updated_at FROM %v WHERE %v", r.table, strings.Join(whereClauses, " AND "))
+	rows, err := r.client.Query(query, whereArgs...)
 	if err != nil {
-		logger.Log.WithFields(logrus.Fields{"userId": userId}).Errorf("Failed getting notes by user id '%v'. Error: %v", userId, err.Error())
+		logger.Log.WithFields(logrus.Fields{"userId": userId, "filters": filters, "args": whereArgs, "query": query}).Errorf("Failed getting notes by user id '%v'. Error: %v", userId, err.Error())
 
 		return []dto.NoteDTO{}, false
 	}

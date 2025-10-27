@@ -31,7 +31,7 @@ type NoteService interface {
 	CloseDBConnection()
 	Create(dto.NoteDTO, uint64) (dto.NoteDTO, error)
 	Get(uint64, uint64) (dto.NoteDTO, bool)
-	GetByUserId(uint64) ([]dto.NoteDTO, bool)
+	GetByUserId(uint64, map[string]interface{}) ([]dto.NoteDTO, bool)
 	Delete(uint64, uint64) bool
 	Update(dto.NoteDTO, uint64) bool
 }
