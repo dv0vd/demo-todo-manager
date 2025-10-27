@@ -29,18 +29,18 @@ type EnvService interface {
 
 type NoteService interface {
 	CloseDBConnection()
-	Create(noteDTO dto.NoteDTO, userId uint64) (dto.NoteDTO, error)
-	Get(id uint64, userId uint64) (dto.NoteDTO, bool)
-	GetByUserId(userId uint64) ([]dto.NoteDTO, bool)
-	Delete(id uint64, userId uint64) bool
-	Update(noteDTO dto.NoteDTO, userId uint64) bool
+	Create(dto.NoteDTO, uint64) (dto.NoteDTO, error)
+	Get(uint64, uint64) (dto.NoteDTO, bool)
+	GetByUserId(uint64) ([]dto.NoteDTO, bool)
+	Delete(uint64, uint64) bool
+	Update(dto.NoteDTO, uint64) bool
 }
 
 type UserService interface {
 	CloseDBConnection()
 	GetByEmail(string) (dto.UserDTO, bool)
 	GetById(uint64) (dto.UserDTO, bool)
-	HashPassword(userDTO dto.UserDTO) (string, error)
+	HashPassword(dto.UserDTO) (string, error)
 	Store(dto.UserDTO) (dto.UserDTO, error)
-	ValidatePassword(password, hashedPassword string) bool
+	ValidatePassword(string, string) bool
 }
