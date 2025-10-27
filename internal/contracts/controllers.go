@@ -11,11 +11,13 @@ type AuthController interface {
 
 type NoteController interface {
 	Delete(http.ResponseWriter, *http.Request)
+	Done(http.ResponseWriter, *http.Request)
 	Edit(http.ResponseWriter, *http.Request)
 	Index(http.ResponseWriter, *http.Request)
 	GetNoteService() NoteService
 	Show(http.ResponseWriter, *http.Request)
 	Store(http.ResponseWriter, *http.Request)
+	Undone(http.ResponseWriter, *http.Request)
 }
 
 type UserController interface {

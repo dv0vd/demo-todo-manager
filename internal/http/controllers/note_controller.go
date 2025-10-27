@@ -78,6 +78,62 @@ func (c *noteController) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// @Summary Done note
+// @Description Mark a note as completed
+// @Tags Note
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param id path int true "Note ID"
+// @Success 200 {object} responses.NoteResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 404 {object} responses.ErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes/{id}/done [get]
+// @Security ApiKeyAuth
+func (c *noteController) Done(w http.ResponseWriter, r *http.Request) {
+	if !MethodValidation(w, r, requests.DoneNoteValidateMethod) {
+		return
+	}
+
+	noteId, ok := c.getNoteIdFromURL(w, r)
+	if !ok {
+		return
+	}
+
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
+	if !ok {
+		UnknownErrorResponse(w, r)
+		return
+	}
+
+	localizer := GetLocalizer(r)
+
+	if (noteDTO == dto.NoteDTO{}) {
+		NotFoundResponse(w, r, localizer.T("note.not_found", map[string]interface{}{
+			"id": noteId,
+		}))
+		return
+	}
+
+	noteDTO.Done = true
+	if !c.noteService.Update(noteDTO, userDTO.ID) {
+		UnknownErrorResponse(w, r)
+		return
+	}
+
+	JsonResponse(
+		w,
+		r,
+		responses.NoteResponse(noteDTO),
+		http.StatusOK,
+	)
+}
+
 // @Summary Update note
 // @Description Fully updates an existing note by its ID. All fields will be overwritten with the provided values.
 // @Tags Note
@@ -283,6 +339,62 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	}
 	noteDTO, err := c.noteService.Create(noteDTO, userDTO.ID)
 	if err != nil {
+		UnknownErrorResponse(w, r)
+		return
+	}
+
+	JsonResponse(
+		w,
+		r,
+		responses.NoteResponse(noteDTO),
+		http.StatusOK,
+	)
+}
+
+// @Summary Undone note
+// @Description Mark a note as uncompleted
+// @Tags Note
+// @Produce json
+// @Param Accept-Language header string false "User locale" Enums(ru, en) Example(en) Default(en)
+// @Param id path int true "Note ID"
+// @Success 200 {object} responses.NoteResponseStruct
+// @Failure 401 {object} responses.ErrorResponseStruct
+// @Failure 404 {object} responses.ErrorResponseStruct
+// @Failure 500 {object} responses.ErrorResponseStruct
+// @Router /notes/{id}/undone [get]
+// @Security ApiKeyAuth
+func (c *noteController) Undone(w http.ResponseWriter, r *http.Request) {
+	if !MethodValidation(w, r, requests.UndoneNoteValidateMethod) {
+		return
+	}
+
+	noteId, ok := c.getNoteIdFromURL(w, r)
+	if !ok {
+		return
+	}
+
+	userDTO, ok := c.getUser(w, r)
+	if !ok {
+		return
+	}
+
+	noteDTO, ok := c.noteService.Get(noteId, userDTO.ID)
+	if !ok {
+		UnknownErrorResponse(w, r)
+		return
+	}
+
+	localizer := GetLocalizer(r)
+
+	if (noteDTO == dto.NoteDTO{}) {
+		NotFoundResponse(w, r, localizer.T("note.not_found", map[string]interface{}{
+			"id": noteId,
+		}))
+		return
+	}
+
+	noteDTO.Done = false
+	if !c.noteService.Update(noteDTO, userDTO.ID) {
 		UnknownErrorResponse(w, r)
 		return
 	}
