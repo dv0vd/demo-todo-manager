@@ -128,6 +128,7 @@ func (c *noteController) Edit(w http.ResponseWriter, r *http.Request) {
 
 	noteDTO.Title = req.Title
 	noteDTO.Description = req.Description
+	noteDTO.Done = req.Done
 	if !c.noteService.Update(noteDTO, userDTO.ID) {
 		UnknownErrorResponse(w, r)
 		return
@@ -277,6 +278,7 @@ func (c *noteController) Store(w http.ResponseWriter, r *http.Request) {
 	noteDTO := dto.NoteDTO{
 		Title:       req.Title,
 		Description: req.Description,
+		Done:        req.Done,
 		UserId:      userDTO.ID,
 	}
 	noteDTO, err := c.noteService.Create(noteDTO, userDTO.ID)

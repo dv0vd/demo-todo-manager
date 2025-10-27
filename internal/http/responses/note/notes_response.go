@@ -6,6 +6,7 @@ type Note struct {
 	ID          uint64 `json:"id" example:"161"`
 	Title       string `json:"title" example:"For Peace"`
 	Description string `json:"description" example:"May all people live safely and without suffering."`
+	Done        bool   `json:"done" example:"true"`
 }
 
 type NotesData struct {
@@ -26,6 +27,7 @@ func NotesResponse(notes []dto.NoteDTO) NotesResponseStruct {
 			ID:          noteDTO.ID,
 			Title:       noteDTO.Title,
 			Description: noteDTO.Description,
+			Done:        noteDTO.Done,
 		})
 	}
 
