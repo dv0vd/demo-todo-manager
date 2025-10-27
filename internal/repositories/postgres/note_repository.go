@@ -45,11 +45,12 @@ func (r *noteRepository) CloseDBConnection() {
 func (r *noteRepository) Create(noteDTO dto.NoteDTO, userId uint64) (dto.NoteDTO, error) {
 	if err := r.client.QueryRow(
 		fmt.Sprintf(
-			"INSERT INTO %v(title, description, user_id) VALUES($1, $2, $3) RETURNING id, created_at, updated_at",
+			"INSERT INTO %v(title, description, done, user_id) VALUES($1, $2, $3, $4) RETURNING id, created_at, updated_at",
 			r.table,
 		),
 		noteDTO.Title,
 		noteDTO.Description,
+		noteDTO.Done,
 		userId,
 	).Scan(&noteDTO.ID, &noteDTO.CreatedAt, &noteDTO.UpdatedAt); err != nil {
 		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO, "userId": userId}).Errorf("Error during note creation: %v", err.Error())
@@ -145,18 +146,32 @@ func (r *noteRepository) Delete(id uint64, userId uint64) bool {
 }
 
 func (r *noteRepository) Update(noteDTO dto.NoteDTO, userId uint64) bool {
-	if _, err := r.client.Exec(
+	result, err := r.client.Exec(
 		fmt.Sprintf(
-			"UPDATE %v SET title=$1, description=$2, updated_at=NOW() WHERE id=$3 AND user_id=$4",
+			"UPDATE %v SET title=$1, description=$2, done=$3, updated_at=NOW() WHERE id=$4 AND user_id=$5",
 			r.table,
 		),
 		noteDTO.Title,
 		noteDTO.Description,
+		noteDTO.Done,
 		noteDTO.ID,
 		userId,
-	); err != nil {
+	)
+
+	if err != nil {
 		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO, "userId": userId}).Errorf("Failed updating note #%v. Error: %v", noteDTO.ID, err.Error())
 
+		return false
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		logger.Log.WithFields(logrus.Fields{"noteDTO": noteDTO, "userId": userId}).Errorf("Failed obtaining affected rows amount for note #%v. Error: %v", noteDTO.ID, err.Error())
+
+		return false
+	}
+
+	if rowsAffected == 0 {
 		return false
 	}
 
