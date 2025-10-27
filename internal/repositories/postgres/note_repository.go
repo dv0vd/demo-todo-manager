@@ -66,12 +66,12 @@ func (r *noteRepository) Get(id uint64, userId uint64) (dto.NoteDTO, bool) {
 
 	if err := r.client.QueryRow(
 		fmt.Sprintf(
-			"SELECT id, title, description, created_at, updated_at FROM %v WHERE id=$1 AND user_id=$2",
+			"SELECT id, title, description, done, created_at, updated_at FROM %v WHERE id=$1 AND user_id=$2",
 			r.table),
 		id,
 		userId,
 	).Scan(
-		&noteDTO.ID, &noteDTO.Title, &noteDTO.Description, &noteDTO.CreatedAt, &noteDTO.UpdatedAt,
+		&noteDTO.ID, &noteDTO.Title, &noteDTO.Description, &noteDTO.Done, &noteDTO.CreatedAt, &noteDTO.UpdatedAt,
 	); err != nil {
 		if err == sql.ErrNoRows {
 			return noteDTO, true
@@ -103,7 +103,7 @@ func (r *noteRepository) GetByUserId(userId uint64, filters map[string]interface
 		}
 	}
 
-	query := fmt.Sprintf("SELECT id, title, description, created_at, updated_at FROM %v WHERE %v", r.table, strings.Join(whereClauses, " AND "))
+	query := fmt.Sprintf("SELECT id, title, description, done, created_at, updated_at FROM %v WHERE %v", r.table, strings.Join(whereClauses, " AND "))
 	rows, err := r.client.Query(query, whereArgs...)
 	if err != nil {
 		logger.Log.WithFields(logrus.Fields{"userId": userId, "filters": filters, "args": whereArgs, "query": query}).Errorf("Failed getting notes by user id '%v'. Error: %v", userId, err.Error())
@@ -115,7 +115,7 @@ func (r *noteRepository) GetByUserId(userId uint64, filters map[string]interface
 	for rows.Next() {
 		var noteDTO dto.NoteDTO
 
-		err = rows.Scan(&noteDTO.ID, &noteDTO.Title, &noteDTO.Description, &noteDTO.CreatedAt, &noteDTO.UpdatedAt)
+		err = rows.Scan(&noteDTO.ID, &noteDTO.Title, &noteDTO.Description, &noteDTO.Done, &noteDTO.CreatedAt, &noteDTO.UpdatedAt)
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{"userId": userId}).Errorf("Failed getting notes by user id '%v'. Error: %v", userId, err.Error())
 
