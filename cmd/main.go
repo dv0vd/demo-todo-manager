@@ -29,7 +29,7 @@ import (
 
 // @contact.name Viacheslav Davydov
 // @contact.url https://dv0vd.dev
-// @contact.email viacheslav.davydov@dv0vd.xyz
+// @contact.email viacheslav_davydov@dv0vd.dev
 
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
